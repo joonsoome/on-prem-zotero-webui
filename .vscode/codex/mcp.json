@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "shell": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-shell"],
+      "env": {
+        "SHELL_ALLOWED_COMMANDS": "ls,cat,python3,curl,docker,docker-compose"
+      }
+    },
+    "http": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-http"]
+    },
+    "mcphub": {
+      "url": "http://192.168.0.110:3000/mcp"
+    }
+  }
+}
