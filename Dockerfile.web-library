@@ -1,0 +1,31 @@
+FROM node:20-bullseye AS builder
+
+WORKDIR /app
+
+# Prereqs for overlay copy
+RUN apt-get update && apt-get install -y --no-install-recommends rsync && rm -rf /var/lib/apt/lists/*
+
+# Copy upstream subtree and overlay
+COPY app/web-library-upstream/ /app/web-library-upstream/
+COPY app/web-library-overlay/ /app/web-library-overlay/
+
+# Apply overlay into a build directory
+RUN mkdir -p /app/web-library-build \
+    && rsync -a /app/web-library-upstream/ /app/web-library-build/ \
+    && if [ -d /app/web-library-overlay/src ]; then rsync -a /app/web-library-overlay/src/ /app/web-library-build/src/; fi \
+    && if [ -d /app/web-library-overlay/config ]; then rsync -a /app/web-library-overlay/config/ /app/web-library-build/config/; fi
+
+# Build Web Library (combined subtree + overlay)
+RUN cd /app/web-library-build \
+    && npm ci \
+    && npm run build
+
+# Runtime: serve static assets via nginx
+FROM nginx:1.27-alpine AS runtime
+
+COPY --from=builder /app/web-library-build/build/ /usr/share/nginx/html/
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
+

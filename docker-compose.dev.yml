@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  zotero-pdf-proxy:
+    container_name: zotero-pdf-proxy-dev
+    environment:
+      - ZOTERO_ROOT=/data/zotero
+    volumes:
+      - ${DEV_ZOTERO_SAMPLE_ROOT:-./sample-webdav/zotero}:/data/zotero
+      - ./app:/app
+    ports:
+      - "${DEV_PDF_PROXY_PORT:-8280}:8000"
+
+  web-library:
+    container_name: zotero-web-library-dev
+    image: ${WEB_LIBRARY_IMAGE:-zotero-web-library:dev}
+    ports:
+      - "${DEV_WEB_LIBRARY_PORT:-8281}:80"
