@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  zotero-pdf-proxy:
+    image: python:3.11-slim
+    container_name: zotero-pdf-proxy
+    working_dir: /app
+    volumes:
+      - /volume1/Reference/zotero:/data/zotero
+      - ./app:/app
+    environment:
+      - ZOTERO_ROOT=/data/zotero
+    command: >
+      bash -c "
+      pip install --no-cache-dir -r requirements.txt &&
+      uvicorn main:app --host 0.0.0.0 --port 8000
+      "
+    ports:
+      - "8280:8000"
+    restart: unless-stopped
+
