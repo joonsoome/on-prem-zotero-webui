@@ -1,0 +1,83 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.citation-options {
+	@include breakpoints.touch-or-bp-down(sm) {
+		margin-bottom: variables.$form-group-margin-touch;
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		position: sticky;
+		top: 0;
+		width: 100%;
+		background-color: common.$modal-content-bg;
+		padding-top: variables.$form-group-margin;
+		padding-bottom: variables.$form-group-margin;
+		border-bottom: variables.$border-width solid common.$modal-border-color;
+		margin-bottom: variables.$modal-inner-padding;
+	}
+
+	@include selectors.state(".modal-body:focus .citation-options") {
+		@include breakpoints.mouse-keyboard-and-bp-up(md) {
+			padding-top: variables.$form-group-margin - variables.$outline-width;
+		}
+	}
+
+	.style-selector-container {
+		flex: 1 1 auto;
+		display: flex;
+
+		.form-control {
+			@include breakpoints.touch-or-bp-down(sm) {
+				display: flex;
+				align-items: center;
+				line-height: variables.$line-height-base;
+				height: auto;
+				white-space: normal;
+				overflow: visible;
+				padding-right: variables.$input-btn-padding-x-touch;
+				margin-right: 0;
+			}
+		}
+	}
+
+	.style-selector-container, .locale-selector-container {
+		@include breakpoints.touch-or-bp-down(sm) {
+			.col-form-label {
+				flex: 0 0 33%;
+			}
+
+			.col {
+				flex: 0 0 66%;
+				overflow: hidden;
+			}
+		}
+	}
+
+	.style-selector {
+		.select-option:last-child {
+			color: common.$link-color;
+			-webkit-font-smoothing: subpixel-antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+	}
+
+	.locale-selector-container {
+		@include breakpoints.mouse-and-bp-up(md) {
+			flex: 1 1 auto;
+			display: flex;
+			padding-left: variables.$space-xs;
+		}
+	}
+
+	.style-selector, .locale-selector {
+		@include breakpoints.touch-or-bp-down(sm) {
+			height: 100%;
+			padding: 0;
+			margin: 0;
+			min-width: 30%;
+		}
+	}
+}

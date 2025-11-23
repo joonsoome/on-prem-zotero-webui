@@ -1,0 +1,73 @@
+@use "../../abstracts/mixins/breakpoints";
+@use "../../abstracts/mixins/selectors";
+@use "../../abstracts/variables";
+
+.bibliography-modal {
+	width: unset;
+
+	@include breakpoints.bp-down(xs) {
+		max-width: unset;
+		width: 100%;
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {max-height: calc(100vh - 64px);
+		width: 720px;
+		min-height: 480px; // allow enough space for dropdowns to be fully contained within the modal
+		overflow: visible; // Modal needs overflow for split button dropdown, so we need to reset the border-radius
+	}
+
+	.modal-header {
+		@include breakpoints.mouse-and-bp-up(md) {
+			border-top-left-radius: variables.$modal-border-radius;
+			border-top-right-radius: variables.$modal-border-radius;
+		}
+	}
+
+	.modal-body {
+		display: flex;
+		flex-direction: column;
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			flex: 1 1 auto;
+			padding-top: 0;
+
+			&.loading {
+				display: flex;
+				flex-direction: column;
+			}
+		}
+
+		&:focus {
+			.keyboard & {
+				padding-left: variables.$modal-inner-padding - variables.$outline-width;
+				padding-right: variables.$modal-inner-padding - variables.$outline-width;
+			}
+		}
+	}
+
+	.modal-footer {
+		border-bottom-left-radius: variables.$modal-border-radius;
+		border-bottom-right-radius: variables.$modal-border-radius;
+	}
+
+	.form {
+		flex: 0 1 auto;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.bibliography-container {
+		padding: 0 variables.$modal-inner-padding;
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			overflow-y: scroll;
+		}
+
+		@include selectors.state(".loading .bibliography-container") {
+			flex: 1 1 auto;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+	}
+}

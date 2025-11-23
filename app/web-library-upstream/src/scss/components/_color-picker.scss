@@ -1,0 +1,68 @@
+@use "../abstracts/functions/asset-url";
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.color-picker {
+	input {
+		display: none;
+	}
+
+	.color-picker-grid {
+		grid-gap: variables.$space-min;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			grid-template-columns: repeat(8, variables.$space-thumb);
+			grid-template-rows: repeat(5, variables.$space-thumb);
+			padding: variables.$space-min;
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			grid-template-columns: repeat(8, variables.$space-md);
+			grid-template-rows: repeat(5, variables.$space-md);
+			padding: variables.$space-min;
+		}
+
+		.tag-color-manager & {
+			@include breakpoints.touch-or-bp-down(sm) {
+				grid-template-columns: repeat(3, variables.$space-thumb);
+				grid-template-rows: repeat(3, variables.$space-thumb);
+				padding: variables.$space-min;
+			}
+
+			@include breakpoints.mouse-and-bp-up(md) {
+				grid-template-columns: repeat(3, variables.$space-md);
+				grid-template-rows: repeat(3, variables.$space-md);
+				padding: variables.$space-min;
+			}
+		}
+
+		@include selectors.state(".color-picker.show") {
+			display: grid;
+		}
+	}
+
+	.color-picker-option {
+		border: none;
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			width: 100%;
+			height: 100%;
+
+			&:focus {
+				outline: variables.$outline-width solid common.$focus-color;
+			}
+
+			&[data-color="#ffffff"],
+			&.clear {
+				padding: 0;
+				border: variables.$border-width solid #ddd;
+			}
+
+			&.clear {
+				background:	asset-url.image-url("icons/x.svg") center center no-repeat;
+			}
+		}
+	}
+}

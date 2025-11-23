@@ -1,0 +1,349 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/button";
+@use "../abstracts/mixins/hairline";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/variables";
+@use "../themes/common";
+@use "sass:map";
+
+.btn {
+	padding: variables.$input-btn-padding-y variables.$input-btn-padding-x;
+	cursor: pointer;
+	border: variables.$border-width solid transparent;
+	color: common.$text-color;
+	background-color: transparent;
+	vertical-align: middle;
+	text-decoration: none;
+	transition:
+		color variables.$input-btn-transition,
+		background-color variables.$input-btn-transition,
+		border-color variables.$input-btn-transition,
+		box-shadow variables.$input-btn-transition;
+
+	@include breakpoints.touch-or-bp-down(sm) {
+		padding: variables.$input-btn-padding-y-touch variables.$default-padding-x-touch;
+
+		&.hairline-top {
+			border-top: none;
+			padding-top: variables.$input-btn-padding-y-touch + 2 * variables.$input-border-width;
+
+			@include hairline.hairline(top, "color-shade-4");
+		}
+
+		&.hairline-start-padding {
+			@include hairline.hairline(top, "color-shade-4", $start: variables.$default-padding-x-touch);
+		}
+
+		&.hairline-start-icon-24 {
+			@include hairline.hairline(top, "color-shade-4", $start: variables.$default-padding-x-touch);
+		}
+
+		&.hairline-start-icon-28 {
+			@include hairline.hairline(top, "color-shade-4", $start: (2 * variables.$default-padding-x-touch + 28px));
+
+			.icon[width="24"] {
+				margin-left: 2px;
+				margin-right: variables.$default-padding-x-touch + 2px;
+			}
+		}
+
+		&[class*="hairline"]:only-child {
+			@include hairline.hairline-disabled(top);
+		}
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		border-radius: variables.$input-btn-border-radius;
+	}
+
+	@include selectors.state(".btn-group > .btn") {
+		position: relative;
+
+		&:hover,
+		&:focus {
+			z-index: 1;
+		}
+
+		&:not(:last-child) {
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		&:not(:first-child) {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+			margin-left: -(variables.$input-border-width);
+		}
+
+		// Prevent dark border due to overlap
+		& + .btn:disabled {
+			margin-left: 0;
+			border-left-width: 0;
+		}
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+
+	&:not(:disabled) {
+		cursor: pointer;
+	}
+
+	&:focus:not(.btn-link) {
+		outline: none;
+	}
+
+	.icon {
+		@include selectors.state(".btn.icon-left") {
+			@include breakpoints.touch-or-bp-down(sm) {
+				margin-right: variables.$default-padding-x-touch;
+				vertical-align: top;
+			}
+
+			@include breakpoints.mouse-and-bp-up(md) {
+				margin-right: variables.$space-min;
+			}
+		}
+	}
+}
+
+// Icon button
+
+.btn-icon {
+	color: common.$icon-color;
+	line-height: variables.$space-md;
+
+	@include breakpoints.touch-or-bp-down(sm) {
+		padding: variables.$input-btn-padding-y-touch variables.$input-btn-padding-x-touch;
+	}
+
+	@include breakpoints.touch-keyboard-or-bp-down(sm) {
+		&:focus {
+			outline: variables.$outline-width solid common.$focus-color;
+			outline-offset: -(variables.$outline-width);
+		}
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		padding: variables.$space-min;
+
+		&.active {
+			background-color: common.$btn-icon-active-bg;
+		}
+	}
+
+	@include breakpoints.mouse-keyboard-and-bp-up(md) {
+		&:focus {
+			border-color: var(--accent-blue);
+			box-shadow: 0 0 0 variables.$input-btn-focus-width var(--accent-blue);
+		}
+	}
+
+	.icon {
+		position: static;
+		margin: 0;
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		@include selectors.state(".btn-icon:active") {
+			&,
+			.icon {
+				color: common.$icon-active-color;
+			}
+		}
+
+		@include selectors.state(".btn-icon.active") {
+			&,
+			.icon {
+				color: common.$btn-icon-active-color;
+			}
+		}
+	}
+}
+
+.btn-link {
+	display: inline;
+	border: 0;
+	color: common.$link-color;
+	background-color: transparent;
+
+	.icon {
+		color: inherit;
+	}
+
+	html:not(.specifity) & {
+		padding: 0;
+	}
+}
+
+.btn-circle,
+.btn-icon {
+	.icon {
+		html:not(.specifity) & {
+			vertical-align: top;
+		}
+	}
+}
+
+.btn-lg {
+	font-size: variables.$font-size-lg;
+	padding: variables.$input-btn-padding-y-lg variables.$input-btn-padding-x-lg;
+}
+
+.btn-xl {
+	// 48px height
+}
+
+.btn-xxl {
+	// 64px height
+}
+
+.btn-primary {
+	@include button.button-variant("accent-red");
+}
+
+.btn-outline-primary {
+	@include button.button-variant("accent-red", $outline: true);
+}
+
+.btn-secondary {
+	@include button.button-variant("accent-blue");
+}
+
+.btn-outline-secondary {
+	@include button.button-variant("accent-blue", $outline: true);
+}
+
+.btn-transparent-secondary {
+	color: var(--accent-blue);
+}
+
+.btn-outline-light {
+	@include button.button-variant(common.$btn-light-color, $outline: true);
+}
+
+.btn-default {
+	color: common.$btn-default-color;
+	border-color: common.$btn-default-border-color;
+
+	@include selectors.state(".btn-default:hover", ".btn-file input:hover + .btn-default") {
+		background-color: common.$btn-default-hover-bg;
+		box-shadow: 0 2px 4px var(--color-button-shadow-lighter);
+	}
+
+	@include selectors.state(".btn-default:active", ".btn-file input:active + .btn-default") {
+		background-color: var(--color-button-active-bg);
+		box-shadow: none;
+	}
+
+	@include selectors.state(".btn-default:disabled", ".btn-file input:disabled + .btn-default") {
+		box-shadow: none;
+	}
+
+	@include selectors.state(".keyboard .btn-default") {
+		@include selectors.state(".btn-default:focus", ".btn-file input:focus + .btn-default") {
+			border-color: var(--accent-blue);
+			box-shadow: 0 0 0 variables.$input-btn-focus-width var(--accent-blue);
+		}
+
+		@include selectors.state(
+			".btn-default:focus:hover", ".btn-file input:focus:hover + .btn-default"
+		) {
+			border-color: var(--accent-blue-lighter);
+	 		box-shadow:
+	 			0 0 0 variables.$input-btn-focus-width var(--accent-blue-lighter),
+	 			0 4px 4px var(--color-button-shadow);
+		}
+
+		@include selectors.state(
+			".btn-default:focus:active", ".btn-file input:focus:active + .btn-default"
+		) {
+			border-color: var(--accent-blue-darker);
+			box-shadow: 0 0 0 variables.$input-btn-focus-width var(--accent-blue-darker);
+		}
+	}
+}
+
+
+// Circle button
+
+.btn-circle {
+	@include breakpoints.touch-or-bp-down(sm) {
+		width: variables.$space-lg;
+		height: variables.$space-lg;
+		padding: 0;
+		border-radius: 50%;
+		line-height: 1; // Center icon vertically
+	}
+}
+
+
+// Block button
+
+.btn-block {
+	display: block;
+	width: 100%;
+}
+
+
+// Twisty
+
+.twisty {
+	display: block;
+	width: variables.$space-md;
+	height: variables.$space-md;
+	border: 0;
+	padding: 0;
+	background: transparent;
+	cursor: pointer;
+	transition: transform variables.$twisty-transition;
+
+	.icon-triangle {
+		vertical-align: top;
+		transform: rotate(90deg);
+	}
+}
+
+.btn-group {
+	display: inline-flex;
+
+	> .dropdown-toggle {
+		&.btn-lg {
+			padding-left: variables.$input-btn-padding-x-lg - 3px; // Square button
+			padding-right: variables.$input-btn-padding-x-lg - 3px;
+		}
+	}
+}
+
+// File upload button
+
+::-webkit-file-upload-button {
+	@include breakpoints.mouse-and-bp-up(md) {
+  	appearance: initial; // Reset normalize
+  	font: initial; // Reset normalize
+  }
+}
+
+.btn-file {
+	display: flex;
+	position: relative;
+
+	input {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+		font-size: 10rem; // Needed for pointer cursor
+		opacity: 0;
+		cursor: pointer;
+		overflow: hidden; // Fix overflow in mobile browsers
+
+		&:focus {
+			position: absolute; // Reset
+		}
+	}
+}

@@ -1,0 +1,19 @@
+@use "sass:math";
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/variables";
+
+.col {
+	flex: 1 1 0;
+	width: 100%;
+	max-width: 100%;
+	position: relative;
+}
+
+@for $i from 1 through variables.$grid-columns {
+	.col-#{$i} {
+		@include breakpoints.mouse-and-bp-up(md) {
+			flex: 0 0 calc( 100% / (#{math.div(variables.$grid-columns, $i)}) );
+			max-width: calc( 100% / (#{math.div(variables.$grid-columns, $i)}) );
+		}
+	}
+}

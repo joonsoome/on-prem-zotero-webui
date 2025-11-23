@@ -1,0 +1,20 @@
+@use "../../abstracts/mixins/hairline";
+@use "../../abstracts/mixins/selectors";
+@use "../../abstracts/variables";
+
+.tag-selector-list {
+	.tag {
+		&:focus {
+			.keyboard & {
+				outline-offset: -(variables.$outline-width);
+
+				@include hairline.hairline-disabled(top);
+			}
+		}
+	}
+
+	.icon-circle {
+		margin-left: 2px;
+		margin-right: variables.$space-xs + 2px;
+	}
+}

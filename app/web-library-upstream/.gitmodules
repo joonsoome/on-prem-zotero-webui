@@ -1,0 +1,19 @@
+[submodule "modules/reader"]
+	path = modules/reader
+	url = https://github.com/zotero/reader.git
+
+[submodule "modules/pdf-worker"]
+	path = modules/pdf-worker
+	url = https://github.com/zotero/pdf-worker.git
+[submodule "modules/note-editor"]
+	path = modules/note-editor
+	url = https://github.com/zotero/note-editor.git
+[submodule "modules/web-common"]
+	path = modules/web-common
+	url = https://github.com/zotero/web-common.git
+[submodule "modules/zotero-schema"]
+	path = modules/zotero-schema
+	url = https://github.com/zotero/zotero-schema.git
+[submodule "modules/locales"]
+	path = modules/locales
+	url = https://github.com/citation-style-language/locales.git

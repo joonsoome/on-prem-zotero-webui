@@ -1,0 +1,281 @@
+@use "sass:math";
+@use "../../abstracts/mixins/breakpoints";
+@use "../../abstracts/mixins/hairline";
+@use "../../abstracts/mixins/selectors";
+@use "../../abstracts/mixins/utilities";
+@use "../../abstracts/variables";
+@use "../../themes/common";
+
+.items-list-wrap {
+	height: 100%;
+	flex: 1 1 auto;
+	flex-direction: column;
+
+	.icon-spin {
+		color: var(--color-accent);
+		position: absolute;
+		left: calc(50% - #{variables.$icon-spin-size-lg * 0.5});
+		top: calc(50% - #{variables.$icon-spin-size-lg * 0.5} + #{variables.$line-height-large * 0.5});
+	}
+}
+
+.items-list {
+	display: flex;
+	flex-direction: column;
+
+	> div {
+		flex: 0 0 auto;
+	}
+
+	.item {
+		// Items in the list are fixed at 61px height
+		display: flex;
+		padding: variables.$item-list-padding-top variables.$item-list-padding-x variables.$item-list-padding-bottom;
+		position: relative;
+
+		@include hairline.hairline(top, "color-shade-4", $start: (2 * variables.$item-list-padding-x + 28px));
+
+		@include breakpoints.bp-down(xs) {
+			@include hairline.hairline(top, "color-shade-4", $start: variables.$item-list-padding-x);
+		}
+
+		@include selectors.state(".items-list:not(.select-mode)") {
+			padding-right: variables.$item-list-padding-right;
+
+			&.active {
+				color: var(--primary-on-accent);
+				background-color: var(--accent-blue);
+
+				@include hairline.hairline-disabled(top);
+
+				& + .item {
+					@include hairline.hairline-disabled(top);
+				}
+			}
+		}
+
+		@include selectors.state(".items-list.select-mode") {
+			padding-left: 2 * variables.$item-list-padding-x + variables.$space-lg;
+			padding-right: variables.$item-list-padding-x;
+
+			@include hairline.hairline(top, "color-shade-4", $start: (3 * variables.$item-list-padding-x + variables.$space-lg + 28px));
+
+			@include breakpoints.bp-down(xs) {
+				@include hairline.hairline(top, "color-shade-4", $start: (2 * variables.$item-list-padding-x + variables.$space-lg));
+			}
+		}
+
+		&:focus {
+			.keyboard & {
+				outline-offset: -(variables.$outline-width);
+
+				@include hairline.hairline-disabled(top);
+
+				&.active {
+					@include selectors.state(".items-list:not(.select-mode)") {
+						outline-color: var(--primary-on-accent);
+					}
+				}
+
+				& + .item {
+					@include selectors.state(".items-list:not(.select-mode)") {
+						@include hairline.hairline-disabled(top);
+					}
+				}
+			}
+		}
+
+		&:first-child {
+			@include hairline.hairline-disabled(top);
+
+			@include selectors.state(".items-list.select-mode") {
+				@include hairline.hairline-disabled(top);
+			}
+		}
+
+		&:last-child:not(.active, :focus) {
+			background-color: var(--color-background);
+
+			// Use box shadow once Safari is able to render 0.5px box-shadow
+			&::after {
+				content: "";
+				position: absolute;
+				z-index: -1;
+				right: 0;
+				bottom: 0;
+				left: 2 * variables.$item-list-padding-x + 28px;
+				height: 1px;
+				box-shadow: 0 1px var(--color-shade-2);
+
+				@media (resolution >= 2dppx) {
+					box-shadow: 0 1px var(--color-shade-4);
+					transform: translateY(-0.5px);
+				}
+
+				@include breakpoints.bp-down(xs) {
+					left: variables.$item-list-padding-x;
+				}
+
+				@include selectors.state(".items-list.select-mode") {
+					left: 3 * variables.$item-list-padding-x + variables.$space-lg + 28px;
+
+					@include breakpoints.bp-down(xs) {
+						left: 2 * variables.$item-list-padding-x + 28px;
+					}
+				}
+			}
+		}
+
+		input[type="checkbox"] {
+			position: absolute;
+			left: variables.$item-list-padding-x;
+			top: (variables.$item-list-row-height - variables.$border-width - variables.$space-lg) * 0.5 + variables.$border-width;
+			pointer-events: none; // These are purely decorative
+		}
+
+		.item-type {
+			flex: 0 0 auto;
+			align-self: center;
+			margin-right: variables.$item-list-padding-x;
+
+			@include selectors.state(".item.placeholder") {
+				color: var(--color-shade-2);
+			}
+		}
+
+		.metadata {
+			@include utilities.text-truncate;
+
+			position: relative;
+
+			@include selectors.state(".item.placeholder") {
+				height: 12px;
+				border-radius: 6px;
+				background-color: var(--color-shade-2);
+			}
+		}
+
+		.title {
+			height: math.floor(variables.$font-size-mobile * variables.$line-height-base); // Keep second line at the bottom
+
+			@include selectors.state(".item.placeholder") {
+				width: 80%;
+				margin-top: 6px;
+
+				@include selectors.state(".item.odd") {
+					width: 90%;
+				}
+			}
+		}
+
+		.creator-year {
+			display: flex;
+			color: common.$item-creator-date-color;
+
+			@include selectors.state(".item.placeholder") {
+				width: 60%;
+				margin-top: 12px;
+				background-color: var(--color-shade-2-50);
+
+				@include selectors.state(".item.odd") {
+					width: 70%;
+				}
+			}
+
+			.creator,
+			.year {
+				@include utilities.text-truncate;
+
+				@include selectors.state(".items-list:not(.select-mode) .item.active") {
+					color: var(--primary-on-accent);
+					opacity: 0.67;
+				}
+			}
+
+			.creator {
+				flex: 0 1 auto;
+			}
+
+			.year {
+				flex: 0 0 auto;
+
+				&:not(:empty) {
+					&::before {
+						content: "(";
+						white-space: pre;
+					}
+
+					&::after {
+						content: ")";
+					}
+				}
+			}
+
+			.creator:not(:empty) + .year:not(:empty) {
+				&::before {
+					content: " (";
+					white-space: pre;
+				}
+			}
+
+			.icons {
+				flex: 0 0 auto;
+				margin-left: auto;
+				display: flex;
+				align-items: center;
+				padding-left: variables.$space-xs;
+
+				@include selectors.state(".icons:empty", ".item.placeholder") {
+					display: none;
+				}
+
+				.emoji {
+					margin-left: 4px;
+				}
+
+				.tag-circles {
+					display: inline-flex;
+					margin-left: variables.$space-min;
+				}
+
+				.icon {
+					color: common.$item-creator-date-color;
+				}
+
+				.icon-attachment,
+				.icon-note-sm {
+					margin-right: variables.$space-min;
+
+					@include selectors.state(".items-list:not(.select-mode) .item.active") {
+						color: var(--primary-on-accent);
+					}
+				}
+			}
+		}
+
+		.icon-chevron-13 {
+			position: absolute;
+			right: 12px;
+			top: (variables.$item-list-row-height - variables.$border-width - variables.$space-md) * 0.5 + variables.$border-width;
+			transform: rotate(90deg);
+			color: common.$item-list-chevron-color;
+
+			@include selectors.state(".item.active") {
+				color: var(--primary-on-accent);
+			}
+
+			@include selectors.state(".items-list.select-mode") {
+				display: none;
+			}
+		}
+	}
+}
+
+.item-list-empty {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	font-size: variables.$info-view-font-size;
+	color: common.$info-view-color;
+}

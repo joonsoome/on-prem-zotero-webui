@@ -1,0 +1,73 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.panel {
+	flex: 1 1 0;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	padding-bottom: variables.$space-min;
+	background-clip: content-box;
+
+	&:last-child {
+		padding-bottom: 0;
+	}
+
+	.panel-header {
+		flex: 0 0 auto;
+		color: common.$panel-header-color;
+		display: flex;
+		position: relative;
+		z-index: 1;
+
+		nav {
+			width: 100%;
+		}
+	}
+
+	.panel-body {
+		flex: 1 1 0;
+
+		.icon-spin {
+			color: var(--color-accent);
+		}
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			overflow-y: scroll;
+			-webkit-overflow-scrolling: touch; // Momentum scrolling for iOS 10–
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			display: flex;
+			flex-direction: column;
+			overflow: hidden; // Fix scrolling on md screens (or min-height: 0)
+		}
+
+		&.loading {
+			@include breakpoints.touch-or-bp-down(sm) {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+		}
+
+		// Disable scrolling while dragging creators on mobiles, keep scrollbar
+		@include selectors.state(".drag-layer + .library-container") {
+			@include breakpoints.touch-or-bp-down(sm) {
+				pointer-events: none;
+
+				.tab-pane {
+					pointer-events: auto; // Reset
+				}
+			}
+		}
+	}
+
+	.panel-backdrop {
+		position: absolute;
+		inset: 0;
+		background-color: common.$panel-backdrop-bg;
+	}
+}

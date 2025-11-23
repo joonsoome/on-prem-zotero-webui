@@ -1,0 +1,174 @@
+@use "../../abstracts/mixins/breakpoints";
+@use "../../abstracts/mixins/hairline";
+@use "../../abstracts/mixins/selectors";
+@use "../../abstracts/variables";
+@use "../../themes/common";
+
+.touch-tag-selector {
+	display: flex;
+	flex-direction: column;
+	inset: 0;
+	z-index: variables.$z-index-touch-tag-selector;
+	background-color: common.$touch-tag-selector-pane-bg;
+
+	@include hairline.hairline(right, "color-shade-4");
+
+	// Use a duplicate selector to override the `position: relative` set by the hairline mixin. A duplicate selector (which stylelint flags) is necessary; see #553.
+	& { // stylelint-disable-line no-duplicate-selectors
+		position: absolute;
+	}
+
+	@include breakpoints.bp-down(xs) {
+		top: -(variables.$touch-header-height) - variables.$navbar-height-xs;
+
+		@include hairline.hairline-disabled(right);
+	}
+
+}
+
+.touch-tag-selector, .tag-manager-list-container {
+	.touch-header {
+		@include breakpoints.bp-down(xs) {
+			padding-top: 0;
+			height: variables.$line-height-large-touch + variables.$border-width;
+
+			@include hairline.hairline-disabled(top);
+		}
+	}
+
+	.filter-container {
+		flex: 0 0 auto;
+		display: flex;
+		align-items: center;
+		height: variables.$line-height-large-touch + variables.$border-width;
+		padding: 0 variables.$space-min variables.$border-width;
+
+		@include hairline.hairline(bottom, "color-shade-4");
+	}
+
+	.tag {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		height: variables.$line-height-large-touch + variables.$border-width;
+		padding: variables.$border-width variables.$default-padding-x-touch 0;
+
+		@include hairline.hairline(
+			top,
+			"color-shade-4",
+			$start: (2 * variables.$default-padding-x-touch + variables.$space-md)
+		);
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			height: 28px;
+			padding: variables.$border-width variables.$default-padding-x;
+
+			@include hairline.hairline(
+				top,
+				"color-shade-4",
+				$start: (2 * variables.$default-padding-x + variables.$space-md)
+			);
+
+			&:first-child {
+				@include hairline.hairline-disabled(top);
+			}
+		}
+
+		&:first-child {
+			@include hairline.hairline-disabled(top);
+		}
+
+		.truncate {
+			flex: 1 1 0;
+		}
+	}
+
+	.tag-color {
+		flex: 0 0 auto;
+		width: variables.$space-md;
+		height: variables.$space-md;
+		border-radius: 50%;
+		border: variables.$border-width solid common.$tag-color-border-color;
+		margin-right: variables.$default-padding-x-touch;
+
+		&[style*="color"] {
+			background-color: currentcolor;
+			border: variables.$border-width solid var(--tag-color-border);
+
+			@each $colorHex, $colorVar in variables.$tag-colors-lookup-items-table {
+				&[data-color="#{$colorHex}"] {
+					// for known tag colors we're overriding the color set with style
+					// attribute to match equivalent theme color, hence !important
+					color: var($colorVar) !important;
+				}
+			}
+		}
+	}
+
+	.tag-selector-list {
+		position: relative; // Needed for last child hairline hack
+		z-index: 0; // …
+
+		.tag {
+			// Use box shadow once Safari is able to render 0.5px box-shadow
+			&:last-child {
+				background-color: common.$touch-tag-selector-pane-bg;
+				position: relative;
+
+				&::after {
+					content: "";
+					position: absolute;
+					z-index: -1;
+					right: 0;
+					bottom: 0;
+					left:  2 * variables.$default-padding-x-touch + variables.$space-md;
+					height: 1px;
+					box-shadow: 0 1px var(--color-shade-2);
+
+					@media (resolution >= 2dppx) {
+						box-shadow: 0 1px var(--color-shade-4);
+						transform: translateY(-0.5px);
+					}
+
+					@include breakpoints.mouse-and-bp-up(md) {
+						left:  2 * variables.$default-padding-x + variables.$space-md;
+					}
+				}
+			}
+
+			.truncate {
+				@include selectors.state(".tag.placeholder") {
+					flex: 0 0 calc(70% - 32px);
+					margin-right: auto;
+					height: variables.$space-sm;
+					border-radius: variables.$space-sm * 0.5;
+					background-color: var(--color-shade-2);
+
+					@include selectors.state(".tag.odd") {
+						flex: 0 0 calc(85% - 32px);
+					}
+				}
+			}
+		}
+
+		&.selected-tags {
+			background-color: common.$touch-tag-selected-bg;
+
+			.tag, .tag:last-child {
+				background-color: unset;
+			}
+
+			.tag {
+				&::before,
+				.tag-color:not([style*="color"]) {
+					mix-blend-mode: multiply;
+				}
+
+				.btn-circle {
+					flex: 0 0 auto;
+					margin-left: variables.$default-padding-x-touch;
+				}
+			}
+		}
+	}
+}

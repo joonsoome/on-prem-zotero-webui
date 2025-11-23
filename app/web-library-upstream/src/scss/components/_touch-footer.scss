@@ -1,0 +1,25 @@
+@use "../abstracts/mixins/hairline";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.touch-footer {
+	flex: 0 0 auto;
+	padding: variables.$border-width 0;
+	height: variables.$touch-footer-height;
+	background-color: common.$touch-footer-bg;
+	color: common.$touch-footer-color;
+
+	@include hairline.hairline(top, "color-shade-4");
+
+	&.darker {
+		background-color: common.$touch-footer-darker-bg;
+	}
+
+	.btn-icon .icon {
+		color: var(--color-accent);
+	}
+
+	.dropdown .btn-icon {
+		height: 100%;
+	}
+}

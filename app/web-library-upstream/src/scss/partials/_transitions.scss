@@ -1,0 +1,89 @@
+@use "../abstracts/variables";
+
+.fade {
+	will-change: opacity;
+
+	&-enter {
+		opacity: 0;
+
+		&-active {
+			opacity: 1;
+			transition: opacity variables.$fade-transition;
+		}
+	}
+
+	&-exit {
+		opacity: 1;
+
+		&-active {
+			opacity: 0;
+			transition: opacity variables.$fade-transition;
+		}
+	}
+}
+
+.nav-fade {
+	will-change: opacity;
+
+	&-enter {
+		opacity: 0;
+
+		&-active {
+			opacity: 1;
+			transition: opacity variables.$nav-fade-transition;
+		}
+	}
+
+	&-exit {
+		opacity: 1;
+
+		&-active {
+			opacity: 0;
+			transition: opacity variables.$nav-fade-transition;
+		}
+	}
+}
+
+.slide-up {
+	will-change: transform;
+
+	&-enter {
+		transform: translate3d(0, 100%, 0);
+
+		&-active {
+			transform: translate3d(0, 0, 0);
+			transition: transform variables.$nav-transition;
+		}
+	}
+
+	&-exit {
+		transform: translate3d(0, 0, 0);
+
+		&-active {
+			transform: translate3d(0, 100%, 0);
+			transition: transform variables.$nav-transition;
+		}
+	}
+}
+
+.slide-down {
+	will-change: transform;
+
+	&-enter {
+		transform: translate3d(0, -100%, 0);
+
+		&-active {
+			transform: translate3d(0, 0, 0);
+			transition: transform variables.$nav-transition;
+		}
+	}
+
+	&-exit {
+		transform: translate3d(0, 0, 0);
+
+		&-active {
+			transform: translate3d(0, -100%, 0);
+			transition: transform variables.$nav-transition;
+		}
+	}
+}

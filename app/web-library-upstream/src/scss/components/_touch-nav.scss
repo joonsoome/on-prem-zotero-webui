@@ -1,0 +1,129 @@
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.touch-nav {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: variables.$line-height-large-touch;
+	z-index: 0;
+	overflow: hidden;
+
+	ul,
+	li {
+		height: 100%;
+	}
+
+	.icon-previous {
+		color: var(--accent-blue);
+		position: absolute;
+		left: variables.$default-padding-x-touch;
+		top: (variables.$line-height-large-touch - variables.$space-md) * 0.5;
+		z-index: 2;
+		transform: rotate(-90deg);
+	}
+
+	ul {
+		position: relative;
+	}
+
+	.center-axis {
+		transform: translate3d(50%, 0, 0);
+	}
+
+	.inner {
+		position: absolute;
+		transform: translate3d(-50%, 0, 0);
+		display: flex;
+		align-items: center;
+		max-width: calc((100% - 4 * #{variables.$default-padding-x-touch}) / 3 - 4px); // Todo: see #73
+	}
+
+	.center-axis,
+	.inner {
+		height: 100%;
+		transition: transform variables.$nav-transition;
+
+		.search-cancel & {
+			transition: none;
+		}
+	}
+
+	li {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		transition: transform variables.$nav-transition, color variables.$nav-transition,
+			opacity variables.$nav-transition-duration ease;
+
+		.search-cancel & {
+			transition: none;
+		}
+	}
+
+
+
+	.before-last {
+		transform: translate3d(-100%, 0, 0);
+		opacity: 0;
+		transition: transform variables.$nav-transition, color variables.$nav-transition,
+			opacity variables.$nav-transition;
+
+		.search-cancel & {
+			transition: none;
+		}
+	}
+
+	.previous {
+		z-index: 1;
+		color: common.$touch-header-link-color;
+
+		.center-axis {
+			transform: translate3d((variables.$default-padding-x-touch + variables.$space-md), 0, 0);
+		}
+
+		.inner {
+			transform: translate3d(0, 0, 0);
+			cursor: pointer;
+		}
+	}
+
+	.next {
+		transform: translate3d(100%, 0, 0);
+		opacity: 0;
+		transition: transform variables.$nav-transition, opacity variables.$nav-transition;
+
+		.search-cancel & {
+			transition: none;
+		}
+	}
+
+	// Options menu & edit button
+	.dropdown,
+	.btn-edit,
+	.btn-cancel {
+		position: absolute;
+		top: 0;
+		height: 100%;
+		z-index: variables.$z-index-menu;
+	}
+
+	.btn {
+		color: common.$btn-options-color;
+		background: common.$btn-options-bg;
+	}
+
+	// Options menu
+	.dropdown {
+		right: variables.$default-padding-x-touch;
+		display: flex;
+		align-items: center;
+
+		.icon {
+			vertical-align: top;
+		}
+	}
+}

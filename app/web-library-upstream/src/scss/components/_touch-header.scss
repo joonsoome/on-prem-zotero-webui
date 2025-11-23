@@ -1,0 +1,27 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/hairline";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.touch-header {
+	flex: 0 0 auto;
+	line-height: variables.$line-height-base; // Reset for correct outline size
+	background-color: common.$touch-header-bg;
+	color: common.$touch-header-color;
+	height: variables.$touch-header-height;
+	position: relative;
+	padding: variables.$border-width 0;
+
+	@include hairline.hairline(top, "color-shade-4");
+	@include hairline.hairline(bottom, "color-shade-4");
+
+	&.darker {
+		background-color: common.$touch-header-darker-bg;
+	}
+
+	.select-button {
+		@include breakpoints.bp-up(sm) {
+			margin-left: variables.$space-md;
+		}
+	}
+}

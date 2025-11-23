@@ -1,0 +1,32 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/variables";
+
+.badge {
+	display: inline-block;
+	font-weight: variables.$badge-font-weight;
+	line-height: 1;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: variables.$badge-border-radius;
+
+	@include breakpoints.touch-or-bp-down(sm) {
+		font-size: variables.$badge-font-size-mobile;
+		padding: variables.$badge-padding-y-mobile variables.$badge-padding-x-mobile;
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		font-size: variables.$badge-font-size;
+		padding: variables.$badge-padding-y variables.$badge-padding-x;
+	}
+}
+
+.badge-pill {
+	border-radius: variables.$badge-pill-border-radius;
+
+	html:not(.specifity) & {
+		padding-right: variables.$badge-pill-padding-x;
+		padding-left: variables.$badge-pill-padding-x;
+	}
+}

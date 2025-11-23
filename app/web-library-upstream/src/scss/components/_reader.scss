@@ -1,0 +1,83 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.reader-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+
+    .incompatible {
+        max-width: 480px;
+        padding: variables.$space-lg variables.$space-md;
+        align-self: center;
+        margin-top: 3em;
+
+        h1 {
+            font-size: variables.$font-size-h1;
+            font-weight: bold;
+            margin-bottom: variables.$space-md;
+        }
+
+        textarea {
+            font-size: variables.$font-size-small;
+            border: 1px solid common.$shade-3;
+            color: common.$shade-9;
+            flex: 1 1 auto;
+            max-width: calc(100% - 2em);
+            resize: none;
+
+            @include breakpoints.touch-or-bp-down(sm) {
+                margin: 1em auto;
+            }
+        }
+    }
+
+    .spinner-wrapper {
+        align-items: center;
+        display: flex;
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+
+    .portal {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+    }
+
+    .popup {
+        background-color: common.$popover-bg;
+        border-radius: variables.$reader-popup-border-radius;
+        box-shadow: common.$reader-popup-shadow;
+        padding: variables.$reader-popup-padding;
+        min-width: 214px;
+        min-height: 60px;
+
+        .toolbar {
+            .counter {
+                margin-right: variables.$space-xs;
+            }
+        }
+
+        .scroll-container-mouse {
+            // limit tags popup height to 12 items (then it will scroll)
+            overflow-y: auto;
+            max-height: 12 * 26px;
+        }
+    }
+
+    .dropdown {
+        .dropdown-item {
+            .icon {
+                vertical-align: baseline;
+                margin-right: variables.$space-min;
+            }
+        }
+    }
+
+    > iframe {
+        border: none;
+        flex: 1 1 100%;
+    }
+}

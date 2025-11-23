@@ -1,0 +1,158 @@
+@use "../../abstracts/mixins/breakpoints";
+@use "../../abstracts/mixins/selectors";
+@use "../../abstracts/variables";
+@use "../../themes/common";
+
+.tab-pane.attachments {
+	position: relative;
+
+	@include breakpoints.mouse-and-bp-only(md) {
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: min-content auto;
+		grid-auto-flow: column;
+		height: 100%;
+
+		&.active:not(.loading) {
+			display: grid;
+		}
+	}
+
+	@include breakpoints.mouse-and-bp-up(lg) {
+		height: 100%; // Fix rich-editor height in Safari
+	}
+
+	> .toolbar {
+		height: variables.$toolbar-height-touch;
+
+		@supports not (-webkit-font-smoothing: subpixel-antialiased) {
+			.scrollbar-style-permanent & {
+				height: variables.$toolbar-height-touch + variables.$border-width;
+				border-bottom: variables.$border-width solid common.$attachments-toolbar-border-color;
+			}
+		}
+
+		.counter {
+			margin-right: variables.$space-xs;
+		}
+
+		> .btn-default {
+			@include selectors.state(".btn-file:active .btn-default") {
+				color: common.$icon-active-color;
+			}
+		}
+	}
+
+	.scroll-container-mouse {
+		@include breakpoints.mouse-and-bp-up(md) {
+			flex: 1 0 (2.5 * variables.$line-height-large);
+		}
+
+		@include selectors.state(".tab-pane.attachments.dnd-target") {
+			position: relative;
+			color: var(--material-background);
+			background: var(--fill-secondary);
+		}
+
+		@supports not (-webkit-font-smoothing: subpixel-antialiased) {
+			.scrollbar-style-permanent & {
+				padding-top: variables.$space-min * 0.5;
+			}
+		}
+	}
+
+	.attachment-details {
+		display: flex;
+		flex-direction: column;
+
+		@include breakpoints.mouse-and-bp-only(md) {
+			border-left: variables.$border-width solid common.$attachment-details-border-color;
+			grid-column: 2;
+			grid-row: 1 / 3;
+		}
+
+		@include breakpoints.mouse-and-bp-up(lg) {
+			flex: 0 0 calc(50% + 42px); // Same size for scrollable area in attachment-list and rich-editor for an average of a 2 line metadata-list
+			border-top: variables.$border-width solid common.$attachment-details-border-color;
+		}
+
+		&.no-selection {
+			justify-content: center;
+			align-items: center;
+		}
+	}
+
+	.placeholder {
+		font-size: variables.$font-size-h1;
+		color: common.$attachment-placeholder-color;
+	}
+
+	.rich-editor {
+		@include breakpoints.mouse-and-bp-up(md) {
+			border-top: variables.$border-width solid common.$editor-border-color;
+		}
+	}
+}
+
+.attachment-details,
+.standalone-attachment,
+.touch-details-drilldown {
+	.download-options {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding-bottom: variables.$space-xs;
+
+			@include breakpoints.touch-or-bp-down(sm) {
+				padding-top: variables.$space-sm;
+				padding-bottom: variables.$space-sm;
+			}
+
+			.btn {
+				@include breakpoints.touch-or-bp-down(sm) {
+					background-color: var(--color-background);
+				}
+			}
+
+			.export-pdf {
+				min-width: 80px; // prevent button shrinking when showing spinner
+				display: flex;
+				align-items: center;
+				text-decoration: none;
+
+				@include breakpoints.touch-or-bp-down(sm) {
+					min-width: 106px; // prevent button shrinking when showing spinner
+				}
+
+				> .icon {
+					margin-left: variables.$space-xs;
+				}
+			}
+
+			.btn-icon .icon {
+				color: common.$icon-color;
+			}
+
+			> .btn + .btn-group,
+			> .btn + .btn,
+			> .btn-group + .btn {
+				margin-left: variables.$space-xs;
+			}
+		}
+}
+
+.tab-pane.attachments .add-linked-url {
+	background-color: common.$panel-bg;
+	padding: variables.$space-sm;
+	position: absolute;
+	width: 100%;
+	border-bottom: variables.$border-width solid common.$attachment-details-border-color;
+	z-index: 2;
+
+	.toolbar {
+		background: unset;
+	}
+
+	.btn {
+		margin-left: variables.$space-min;
+	}
+}

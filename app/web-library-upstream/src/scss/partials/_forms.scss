@@ -1,0 +1,525 @@
+@use "../abstracts/functions/asset-url";
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/dropdown";
+@use "../abstracts/mixins/hairline";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/mixins/utilities";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+::placeholder {
+	color: var(--color-shade-4);
+}
+
+.form { // We do not use a form element for its side effects
+	@include selectors.state(".modal .form") {
+		@include breakpoints.touch-or-bp-down(sm) {
+			margin: -(variables.$modal-inner-padding);
+			padding: variables.$form-group-margin-touch 0;
+		}
+	}
+
+	@include selectors.state(".popover .form") {
+		margin: variables.$space-min 0;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			margin: -(variables.$space-sm);
+			padding: 0;
+		}
+	}
+}
+
+.form-row {
+	@include breakpoints.mouse-and-bp-up(md) {
+		display: flex;
+		flex-wrap: wrap;
+		margin: 0 (-(variables.$form-grid-gutter-width) * 0.5);
+	}
+
+	> .col,
+	> [class*="col-"] {
+		@include breakpoints.mouse-and-bp-up(md) {
+			padding-left: variables.$form-grid-gutter-width * 0.5;
+			padding-right: variables.$form-grid-gutter-width * 0.5;
+		}
+	}
+}
+
+fieldset {
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+
+.form-control-lg + .icon-spin {
+	@include breakpoints.mouse-and-bp-up(md) {
+		top: variables.$icon-spin-spacing-lg;
+		right: variables.$icon-spin-spacing-lg;
+		width: variables.$icon-spin-size-sm;
+		height: variables.$icon-spin-size-sm;
+
+		path {
+			stroke-width: 1.2px;
+		}
+	}
+}
+
+.form-group {
+	@include breakpoints.touch-or-bp-down(sm) {
+		display: flex;
+		padding: variables.$input-border-width variables.$input-btn-padding-x-touch;
+		margin-bottom: variables.$form-group-margin-touch;
+		background-color: common.$input-bg;
+		position: relative;
+
+		@include hairline.hairline(top, "color-shade-5");
+		@include hairline.hairline(bottom, "color-shade-5");
+
+		@include selectors.state(".form-group:last-child", "fieldset .form-group") {
+			margin-bottom: 0;
+		}
+
+		@include selectors.state("fieldset .form-group") {
+			&:not(:first-child) {
+				@include hairline.hairline(top, "color-shade-5", $start: variables.$default-padding-x-touch);
+			}
+
+			&:not(:last-child) {
+				padding-bottom: 0;
+
+				@include hairline.hairline-disabled(bottom);
+			}
+		}
+	}
+
+	@include breakpoints.touch-keyboard-or-bp-down(sm) {
+		&:focus-within:not(.checkboxes, .radios) {
+			&::before,
+			&::after {
+				content: "";
+				position: absolute;
+				left: 0;
+				right: 0;
+				height: variables.$outline-width;
+				background-color: common.$focus-color;
+				z-index: 2;
+			}
+
+			&::before {
+				bottom: calc(100% - #{variables.$input-border-width});
+			}
+
+			&::after {
+				top: calc(100% - #{variables.$input-border-width});
+			}
+		}
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		margin-bottom: variables.$form-group-margin;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+label {
+	.editing &,
+	.form-group & {
+		@include breakpoints.touch-or-bp-down(sm) {
+			flex: 0 0 auto;
+			line-height: variables.$input-btn-height-touch;
+			padding: 0 variables.$input-btn-padding-x-touch;
+			background-color: common.$input-bg;
+			color: common.$label-color;
+
+			.icon {
+				vertical-align: top;
+				margin-top: (variables.$input-btn-height-touch - 28px);
+			}
+		}
+	}
+
+	&.icon-label {
+		@include breakpoints.touch-or-bp-down(sm) {
+			.icon {
+				vertical-align: top;
+				margin-top: (variables.$input-btn-height-touch - 28px) * 0.5;
+			}
+		}
+	}
+}
+
+.col-form-label {
+	@include breakpoints.mouse-and-bp-up(md) {
+		padding-top: (variables.$input-btn-padding-y + variables.$input-border-width);
+		padding-bottom: (variables.$input-btn-padding-y + variables.$input-border-width);
+	}
+}
+
+.input-group {
+	flex: 1 1 auto;
+	display: flex;
+	min-width: 0;
+	position: relative;
+
+	.icon-spin {
+		position: absolute;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			right: variables.$input-btn-padding-x-touch;
+			top: calc(50% - #{variables.$space-lg * 0.5});
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			width: variables.$icon-spin-size-sm;
+			height: variables.$icon-spin-size-sm;
+			right: variables.$space-min + variables.$input-border-width;
+			top: variables.$space-min + variables.$input-border-width;
+
+			path {
+				stroke-width: 1.2px;
+			}
+		}
+	}
+
+	&.textarea {
+		@include breakpoints.touch-or-bp-down(sm) {
+			$textarea-padding: (variables.$space-thumb - variables.$font-size-mobile * variables.$line-height-base-mobile) * 0.5;
+
+			padding-top: $textarea-padding;
+			padding-bottom: $textarea-padding;
+		}
+
+		&.busy {
+			.icon-spin {
+				top: auto;
+				z-index: 2; // Over generated content 'backdrop'
+			}
+
+			// Align backdrop and spinner with last line
+			@include breakpoints.touch-or-bp-down(sm) {
+				&::after,
+				.icon-spin {
+					right: variables.$input-btn-padding-x-touch;
+					bottom: 9px;
+				}
+			}
+
+			@include breakpoints.mouse-and-bp-up(md) {
+				&::after,
+				.icon-spin {
+					bottom: 2px;
+					width: variables.$icon-spin-size-sm;
+					height: variables.$icon-spin-size-sm;
+				}
+			}
+		}
+	}
+
+	// Suggestions
+	.dropdown {
+		flex: 1 1 auto;
+	}
+}
+
+.form-control {
+	flex: 1 1 auto;
+	display: block;
+	width: 100%;
+	color: var(--fill-primary);
+	background-color: var(--material-background);
+	appearance: none;
+	transition:
+		border-color variables.$input-btn-transition,
+		box-shadow variables.$input-btn-transition;
+
+	@include breakpoints.touch-or-bp-down(sm) {
+		min-height: variables.$input-btn-height-touch; // min-height: Take textarea into account
+		padding: 0 variables.$input-btn-padding-x-touch;
+		border: none;
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		padding: variables.$input-btn-padding-y variables.$input-btn-padding-x;
+		border: variables.$input-border-width solid common.$input-border-color;
+		border-radius: variables.$input-btn-border-radius;
+	}
+
+	&:focus {
+		outline: none;
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			border: variables.$input-border-width solid common.$focus-color;
+			box-shadow: 0 0 0 variables.$input-btn-focus-width common.$focus-color;
+		}
+	}
+
+	.busy:not(.textarea) & {
+		@include breakpoints.touch-or-bp-down(sm) {
+			padding-right: variables.$input-btn-padding-x-touch + variables.$space-lg + 1px;
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			padding-right: variables.$space-min + variables.$icon-spin-size-sm + 1px;
+		}
+	}
+
+	&.select-component {
+		@include breakpoints.mouse-and-bp-up(md) {
+			padding: 0;
+			border: none;
+		}
+
+		&.is-disabled .select-value {
+			color: var(--color-text-disabled);
+		}
+	}
+
+	@at-root select.form-control {
+		&:focus {
+			color: common.$focus-color;
+		}
+	}
+}
+
+.form-control-lg {
+	@include breakpoints.mouse-and-bp-up(md) {
+		font-size: variables.$font-size-lg;
+		padding: variables.$input-btn-padding-y-lg variables.$input-btn-padding-x-lg;
+	}
+
+	.busy:not(.textarea) & {
+		@include breakpoints.mouse-and-bp-up(md) {
+			padding-right: variables.$icon-spin-size-sm + variables.$icon-spin-spacing-lg;
+		}
+	}
+}
+
+textarea {
+	resize: vertical;
+
+	.auto-resizer & {
+		resize: none;
+	}
+}
+
+.native-select-wrap {
+	@include breakpoints.touch-or-bp-down(sm) {
+		flex: 1 1 auto;
+		display: flex;
+		align-items: center;
+		min-width: 0;
+		position: relative;
+
+		.form-control {
+			@include utilities.text-truncate(ellipsis);
+
+			padding-right: 0;
+			margin-right: variables.$input-btn-padding-x-touch;
+			line-height: variables.$input-btn-height-touch; // Center text vertically
+
+			&.is-disabled {
+				color: var(--color-text-disabled);
+			}
+		}
+
+		select {
+			appearance: none;
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 1;
+			opacity: 0;
+
+			&:focus {
+				position: absolute; // Reset
+
+				& + .form-control {
+					color: common.$focus-color;
+				}
+			}
+		}
+	}
+}
+
+.checkboxes,
+.radios,
+.files {
+	@include breakpoints.touch-or-bp-down(sm) {
+		display: block;
+		padding: 0;
+
+		@include hairline.hairline-disabled(top);
+		@include hairline.hairline-disabled(bottom);
+	}
+}
+
+.checkbox,
+.radio,
+.file {
+	html:not(.specifity) &.disabled {
+		label {
+			color: var(--color-text-disabled);
+		}
+	}
+
+	@include breakpoints.touch-or-bp-down(sm) {
+		display: flex;
+		align-items: center;
+		padding: variables.$border-width variables.$input-btn-padding-x-touch;
+
+		@include hairline.hairline(top, "color-shade-5");
+		@include hairline.hairline(bottom, "color-shade-5");
+
+		&:not(:first-child) {
+			@include hairline.hairline(top, "color-shade-5");
+		}
+
+		&:not(:last-child) {
+			padding-bottom: 0;
+
+			@include hairline.hairline-disabled(bottom);
+		}
+
+		label,
+		&.file span {
+			flex: 1 1 auto;
+			order: -1;
+			color: common.$text-color;
+		}
+
+		input,
+		&.file button {
+			margin: 0 variables.$input-btn-padding-x-touch;
+		}
+	}
+
+	@include breakpoints.touch-keyboard-or-bp-down(sm) {
+		&:focus-within {
+			&::before,
+			&::after {
+				content: "";
+				position: absolute;
+				left: 0;
+				right: 0;
+				height: variables.$outline-width;
+				background-color: common.$focus-color;
+				z-index: 2;
+				width: 100%; // Reset hairline styles
+			}
+
+			&::before {
+				bottom: calc(100% - #{variables.$input-border-width});
+			}
+
+			&::after {
+				top: calc(100% - #{variables.$input-border-width});
+			}
+
+			& + .checkbox,
+			& + .radio {
+				@include hairline.hairline-disabled(top);
+			}
+		}
+
+		input {
+			outline: none;
+		}
+	}
+
+	// todo
+	@include breakpoints.mouse-and-bp-up(md) {
+		display: flex;
+	}
+}
+
+input[type="checkbox"] {
+	@include breakpoints.touch-or-bp-down(sm) {
+		appearance: none;
+		flex: 0 0 auto;
+		width: variables.$space-lg;
+		height: variables.$space-lg;
+		border-radius: variables.$space-lg * 0.5;
+		background-color: common.$input-bg;
+		border: variables.$input-border-width solid common.$checkbox-border-touch;
+
+		&:checked {
+			border: 0;
+			background: asset-url.image-url("icons/tick-white.svg") no-repeat 0 0 common.$checkbox-checked-bg-touch;
+		}
+	}
+
+	// todo
+	@include breakpoints.mouse-and-bp-up(md) {
+		appearance: none;
+		flex: 0 0 auto;
+		width: variables.$space-md;
+		height: variables.$space-md;
+		background-color: common.$input-bg;
+		border: variables.$input-border-width solid common.$checkbox-border-touch;
+		font-size: 16px;
+		margin: 2px 6px 0 0;
+
+		&:checked {
+			border: 0;
+			background: asset-url.image-url("icons/tick-white-16.svg") no-repeat 0 0 common.$checkbox-checked-bg-touch;
+		}
+	}
+
+	@include breakpoints.mouse-keyboard-and-bp-up(md) {
+		&:focus {
+			outline: auto;
+
+			// Target Firefox only (nicer outline)
+			@supports (-moz-appearance: none) {
+				outline: initial;
+			}
+		}
+	}
+}
+
+input[type="radio"] {
+	@include breakpoints.touch-or-bp-down(sm) {
+		appearance: none;
+		flex: 0 0 auto;
+		width: variables.$space-lg;
+		height: variables.$space-lg;
+		background-color: transparent;
+		border: 0;
+
+		&:checked {
+			background: asset-url.image-url("icons/tick-blue.svg") no-repeat 0 0;
+		}
+	}
+}
+
+input:invalid {
+	outline: variables.$outline-width solid common.$error;
+}
+
+.suggestions {
+	@include dropdown.dropdown-menu;
+
+	&.show {
+		display: block;
+	}
+}
+
+.suggestion {
+	@include dropdown.dropdown-item;
+
+	.keyboard & {
+		&:focus {
+			color: var(--primary-on-accent);
+			background-color: var(--color-accent);
+		}
+	}
+}
+
+.suggestion-divider {
+	@include dropdown.dropdown-divider;
+}

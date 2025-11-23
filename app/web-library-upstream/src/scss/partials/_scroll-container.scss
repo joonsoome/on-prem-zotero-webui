@@ -1,0 +1,22 @@
+@use "../abstracts/mixins/breakpoints";
+
+.scroll-container {
+  flex: 1 1 0;
+  overflow-y: scroll;
+	-webkit-overflow-scrolling: touch; // Momentum scrolling
+}
+
+.scroll-container-touch {
+	@include breakpoints.touch-or-bp-down(sm) {
+		flex: 1 1 0;
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
+	}
+}
+
+.scroll-container-mouse {
+	@include breakpoints.mouse-and-bp-up(md) {
+  	flex: 1 1 0;
+  	overflow-y: scroll;
+  }
+}

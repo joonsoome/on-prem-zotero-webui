@@ -1,0 +1,28 @@
+@use "../abstracts/mixins/selectors";
+
+.inline-feedback {
+	display: block;
+	position: relative;
+
+	.shorter {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		visibility: hidden;
+	}
+
+	&.active {
+		:not(.feedback) {
+			visibility: hidden;
+		}
+
+		.feedback {
+			visibility: visible;
+
+			.dropdown-menu & {
+				color: var(--accent-green);
+			}
+		}
+	}
+}

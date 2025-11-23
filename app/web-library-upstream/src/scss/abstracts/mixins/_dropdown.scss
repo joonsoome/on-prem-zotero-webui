@@ -1,0 +1,91 @@
+@use "../variables";
+@use "breakpoints";
+
+@mixin dropdown-menu {
+	background: var(--material-toolbar);
+	box-shadow: variables.$menu-box-shadow;
+	border: var(--material-panedivider);
+	border-radius: variables.$menu-border-radius;
+	z-index: variables.$z-index-menu;
+	margin: variables.$space-min 0;
+	display: none;
+	will-change: transform;
+	transform: translate3d(0, 0, 0);
+	top: 0;
+	left: 0; // required for correct popper js rendering
+
+	&:focus {
+		outline: none;
+	}
+
+	@include breakpoints.touch-or-bp-down(sm) {
+		padding: variables.$space-xs 0;
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		padding: variables.$space-min 0;
+	}
+}
+
+
+@mixin dropdown-item {
+	display: block;
+	width: 100%;
+	border: none;
+	text-align: left;
+	background-color: transparent;
+	margin: 0;
+	white-space: nowrap; // Prevent line break due to positioned dropdown-wrapper
+	color: var(--fill-primary);
+	cursor: pointer;
+
+	@include breakpoints.touch-or-bp-down(sm) {
+		line-height: variables.$line-height-base-mobile; // Prevent inheritance
+		padding: variables.$dropdown-item-padding-y-touch variables.$dropdown-item-padding-x-touch;
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		line-height: variables.$line-height-base; // Prevent inheritance
+		padding: (variables.$input-btn-padding-y + variables.$input-border-width) variables.$input-btn-padding-x;
+	}
+
+	&.disabled {
+		color: var(--color-text-disabled);
+
+		&:hover,
+		&:focus {
+			color: var(--color-text-disabled);
+			background-color: transparent;
+		}
+	}
+
+	&:focus {
+		outline: none;
+	}
+
+	&:hover,
+	&.active {
+		color: var(--primary-on-accent);
+		background-color: var(--color-accent);
+	}
+
+	.icon {
+		vertical-align: top;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			margin-right: variables.$space-xs;
+		}
+	}
+}
+
+@mixin dropdown-divider {
+	border-top: variables.$input-border-width solid variables.$menu-devider;
+
+	@include breakpoints.touch-or-bp-down(sm) {
+		margin: variables.$space-xs 0;
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		margin: variables.$space-min 0;
+	}
+}

@@ -1,0 +1,532 @@
+@use "sass:math";
+@use "../../abstracts/mixins/breakpoints";
+@use "../../abstracts/mixins/selectors";
+@use "../../abstracts/mixins/utilities";
+@use "../../abstracts/variables";
+@use "../../themes/common";
+
+.metadata-list {
+	@include breakpoints.mouse-and-bp-up(md) {
+		margin-top: 15px - 8px;
+		margin-bottom: 15px - 7px;
+	}
+
+	.attachment-details &,
+	.standalone-attachment & {
+		user-select: text;
+		cursor: auto;
+	}
+
+	.panel.editing & {
+		@include breakpoints.touch-or-bp-down(sm) {
+			margin-top: variables.$form-group-margin-touch;
+			margin-bottom: variables.$form-group-margin-touch;
+		}
+
+		@include breakpoints.touch-and-bp-up(sm) {
+			margin-left: variables.$metadata-list-margin-x-touch;
+			margin-right: variables.$metadata-list-margin-x-touch;
+		}
+	}
+
+	@include selectors.state(".modal .metadata-list.editing") {
+		html:not(.specifity) & {
+			margin: (variables.$form-group-margin-touch - variables.$modal-inner-padding)
+				(-(variables.$modal-inner-padding));
+		}
+	}
+
+	.metadata {
+		align-items: flex-start;
+
+		@include breakpoints.bp-down(xs) {
+			margin-bottom: variables.$font-size-mobile * 0.5;
+		}
+
+		@include breakpoints.touch-or-bp-down(xs) {
+			padding-left: variables.$default-padding-x-touch;
+			padding-right: variables.$default-padding-x-touch;
+		}
+
+		@include breakpoints.bp-up(sm) {
+			display: flex;
+		}
+
+		@include breakpoints.mouse-and-bp-up(sm) {
+			padding-left: variables.$default-padding-x-touch;
+			padding-right: variables.$default-padding-x-touch;
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			padding-left: variables.$default-padding-x;
+			padding-right: variables.$default-padding-x;
+		}
+
+		@include breakpoints.bp-only(md) {
+			padding-right: (variables.$metadata-list-gutter + 1px);
+		}
+
+		&.empty,
+		&.virtual {
+			@include breakpoints.touch-or-bp-down(md) {
+				@include selectors.state(".panel:not(.editing) .metadata-list") {
+					display: none;
+				}
+			}
+
+			.read-only & {
+				display: none;
+			}
+		}
+
+		&.dnd-source {
+			opacity: 0;
+
+			@include breakpoints.touch-or-bp-down(sm) {
+				& + .metadata {
+					padding-top: 0;
+					margin-top: variables.$input-border-width;
+
+					&::before {
+						content: none;
+					}
+				}
+			}
+		}
+
+		// Edit mode
+		@include selectors.state(".editing .metadata-list", ".metadata-list.editing") {
+			@include breakpoints.touch-or-bp-down(sm) {
+				display: flex;
+				align-items: flex-start;
+				position: relative;
+				background-color: common.$input-bg;
+				padding-top: variables.$input-border-width;
+				margin-bottom: 0;
+				padding-left: variables.$input-btn-padding-x-touch;
+				padding-right: variables.$input-btn-padding-x-touch;
+
+				&::before,
+				&::after {
+					position: absolute;
+					left: variables.$default-padding-x-touch;
+					right: 0;
+					top: 0;
+					height: variables.$input-border-width;
+					background: common.$input-border-color;
+					z-index: 1;
+				}
+
+				&::before {
+					content: "";
+				}
+			}
+
+			&:first-child {
+				@include selectors.state("main .metadata-list") { // Exclude modals
+					@include breakpoints.bp-up(sm) {
+						padding-top: 0;
+						border-top-left-radius: variables.$input-border-radius;
+						border-top-right-radius: variables.$input-border-radius;
+					}
+				}
+
+				&::before {
+					@include breakpoints.bp-down-normalized(xs) {
+						left: 0;
+					}
+
+					@include selectors.state("html:not(.specifity) .modal .metadata-list") {
+						left: 0;
+					}
+
+					@include selectors.state("main .metadata-list") {
+						@include breakpoints.bp-up(sm) {
+							content: none;
+						}
+					}
+				}
+			}
+
+			&:last-child {
+				padding-bottom: variables.$input-border-width;
+
+				@include selectors.state("main .metadata-list") {
+					@include breakpoints.bp-up(sm) {
+						padding-bottom: 0;
+						border-bottom-left-radius: variables.$input-border-radius;
+						border-bottom-right-radius: variables.$input-border-radius;
+					}
+				}
+
+				&::after {
+					@include breakpoints.bp-down-normalized(xs) {
+						content: "";
+						left: 0;
+						top: auto;
+						bottom: 0;
+					}
+
+					@include selectors.state("html:not(.specifity) .modal .metadata-list") {
+						content: "";
+						left: 0;
+						top: auto;
+						bottom: 0;
+					}
+
+					@include selectors.state("main .metadata-list") {
+						@include breakpoints.bp-up-normalized(sm) {
+							content: none;
+						}
+					}
+				}
+			}
+
+			// Editable focus state
+			&:focus-within:not(.creators-entry) {
+				.keyboard & {
+					z-index: 2;
+
+					&::before,
+					&::after {
+						content: "";
+						position: absolute;
+						left: 0;
+						right: 0;
+						height: variables.$outline-width;
+						background-color: common.$focus-color;
+					}
+
+					&::before {
+						top: auto;
+						bottom: calc(100% - #{variables.$input-border-width});
+					}
+
+					&::after {
+						top: 100%;
+					}
+				}
+			}
+		}
+	}
+
+	.touch-separated {
+		@include selectors.state(".panel.editing .metadata-list", ".metadata-list.editing") {
+			@include breakpoints.touch-or-bp-down(sm) {
+				margin-bottom: variables.$form-group-margin-touch;
+			}
+
+			@include breakpoints.bp-down(xs) {
+				padding-bottom: variables.$border-width;
+			}
+
+			.modal & {
+				padding-bottom: variables.$border-width;
+			}
+
+			@include selectors.state("main .metadata-list") {
+				@include breakpoints.touch-or-bp-up(sm) {
+					border-bottom-left-radius: variables.$input-btn-border-radius;
+					border-bottom-right-radius: variables.$input-btn-border-radius;
+				}
+			}
+
+			&::after {
+				@include breakpoints.bp-down-normalized(xs) {
+					left: 0;
+					top: auto;
+					bottom: 0;
+					content: "";
+				}
+
+				html:not(.specifity) .modal & {
+					left: 0;
+					top: auto;
+					bottom: 0;
+					content: "";
+				}
+			}
+
+			& + .metadata {
+				@include breakpoints.bp-down(xs) {
+					padding-bottom: variables.$border-width;
+				}
+
+				@include selectors.state("main .metadata-list") {
+					@include breakpoints.touch-and-bp-up(sm) {
+						padding-top: 0;
+						border-top-left-radius: variables.$input-btn-border-radius;
+						border-top-right-radius: variables.$input-btn-border-radius;
+					}
+				}
+
+				&::before {
+					@include breakpoints.bp-down-normalized(xs) {
+						left: 0;
+					}
+
+					.modal & {
+						left: 0;
+					}
+
+					@include selectors.state("main .metadata-list") {
+						@include breakpoints.touch-and-bp-up(sm) {
+							content: none;
+						}
+					}
+				}
+
+				&:focus-within {
+					&::before {
+						@include breakpoints.touch-keyboard-or-bp-down(sm) {
+							content: "";
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.has-btn,
+	.has-btn-icon {
+		@include selectors.state(".panel.editing .metadata-list", ".metadata-list.editing") {
+			@include breakpoints.touch-or-bp-down(sm) {
+				padding-left: 0; // Keep vertical paddings
+				padding-right: 0;
+
+				.btn {
+					padding: 0 variables.$default-padding-x-touch;
+					border: 0;
+					width: 100%;
+					text-align: left;
+					color: common.$link-color;
+					line-height: variables.$line-height-large-touch;
+
+					&:focus {
+						outline: none;
+						box-shadow: none;
+					}
+
+					&.btn-delete {
+						color: var(--accent-red);
+					}
+				}
+			}
+
+			&::before {
+				@include breakpoints.touch-keyboard-or-bp-down(sm) {
+					@include selectors.state(".touch-separated:focus-within") {
+						left: 0;
+					}
+				}
+			}
+		}
+	}
+
+	.has-btn {
+		@include selectors.state(".panel.editing .metadata-list", ".metadata-list.editing") {
+			&::before {
+				@include breakpoints.touch-or-bp-down(sm) {
+					left: variables.$default-padding-x-touch;
+				}
+			}
+
+			.btn {
+				background: transparent;
+			}
+		}
+	}
+
+	.has-btn-icon {
+		@include selectors.state(".panel.editing .metadata-list", ".metadata-list.editing") {
+			&::before {
+				@include breakpoints.touch-or-bp-down(sm) {
+					left: 2 * variables.$default-padding-x-touch + variables.$space-lg;
+				}
+			}
+
+			.btn-icon {
+				@include breakpoints.touch-or-bp-down(sm) {
+					.icon {
+						vertical-align: top;
+						margin-top: (variables.$line-height-large-touch - variables.$space-lg) * 0.5;
+						margin-right: variables.$default-padding-x-touch;
+					}
+				}
+			}
+		}
+	}
+
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.key,
+	.value {
+		min-height: variables.$metadata-list-line-height;
+		overflow: visible;
+		min-width: 0; // Fix truncation
+		display: flex;
+
+		@include breakpoints.bp-only(sm) {
+			min-height: variables.$metadata-list-line-height-sm;
+		}
+
+		@include breakpoints.touch-and-bp-up(md) {
+			min-height: variables.$metadata-list-line-height-sm;
+		}
+
+		// Edit mode
+		@include selectors.state(".panel.editing .metadata-list", ".metadata-list.editing") {
+			@include breakpoints.touch-or-bp-down(sm) {
+				min-height: variables.$line-height-large-touch;
+			}
+		}
+	}
+
+	.key {
+		color: common.$key-color;
+		flex: 0 0 variables.$metadata-list-offset;
+		margin-top: 0;
+		align-items: center;
+
+		@include breakpoints.bp-up(sm) {
+			justify-content: flex-end;
+			padding-right: variables.$metadata-list-gutter-mobile * 0.5;
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			padding-right: variables.$metadata-list-gutter * 0.5;
+		}
+
+		// Edit mode
+		@include selectors.state(".panel.editing .metadata-list", ".metadata-list.editing") {
+			@include breakpoints.touch-or-bp-down(sm) {
+				justify-content: flex-start;
+				padding-right: 0;
+			}
+		}
+
+
+		a[href]:hover {
+			color: common.$link-color;
+		}
+	}
+
+	.metadata:not(.interactable) .read-only .key {
+		 // Allow click drag for text selection to start in labels except on clickable fields
+		pointer-events: none;
+	}
+
+	label {
+		@include utilities.text-truncate;
+
+		line-height: normal; // Flex alignment is more stable
+		user-select: none; // Reset
+
+		&[for="url"] {
+			overflow: inherit;
+			text-overflow: inherit;
+			white-space: inherit;
+		}
+
+		@include selectors.state(".panel.editing .metadata-list", ".metadata-list.editing") {
+			@include breakpoints.touch-or-bp-down(sm) {
+				flex: 1 1 auto;
+			}
+		}
+
+		> a {
+			.icon {
+				color: inherit;
+			}
+
+			@include breakpoints.mouse-and-bp-up(md) {
+				vertical-align: middle;
+			}
+		}
+	}
+
+	.form-control {
+		&:not(textarea) {
+			line-height: normal;
+		}
+
+		&:focus {
+			outline: none;
+		}
+	}
+
+	.native-select-wrap {
+		background-color: transparent;
+
+		.form-control {
+			background-color: transparent;
+		}
+	}
+
+	.value {
+		flex: 1 1 0;
+
+		@include breakpoints.bp-up(sm) {
+			display: flex;
+			align-items: center;
+			padding-left: variables.$metadata-list-gutter-mobile * 0.5;
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			padding-left: variables.$metadata-list-gutter * 0.5;
+
+			.has-value {
+				.select-value {
+					// reduce internal select input padding to match the padding of the other inputs
+					padding-left: variables.$editable-padding;
+					padding-right: variables.$editable-padding;
+				}
+			}
+		}
+
+		// Edit mode
+		@include selectors.state(".panel.editing .metadata-list", ".metadata-list.editing") {
+			@include breakpoints.touch-or-bp-down(sm) {
+				padding-left: 0;
+			}
+		}
+
+		.attachment-details &,
+		.touch-details-drilldown &,
+		.standalone-attachment & {
+			a > .icon {
+				margin-left: variables.$space-min;
+				color: unset;
+			}
+		}
+
+		// Standalone attachments
+		a:hover {
+			color: common.$link-color;
+		}
+	}
+
+	.date-hint {
+		color: common.$shade-5;
+		margin-left: variables.$space-xs;
+		width: 40px;
+		letter-spacing: 4px;
+		text-align: right;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			margin-top: 9px;
+		}
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		.editable {
+			&.textarea {
+				margin-top: math.round((variables.$metadata-list-line-height - variables.$font-size-base * variables.$line-height-base) * 0.5); // Align vertically with label
+				margin-bottom: math.round((variables.$metadata-list-line-height - variables.$font-size-base * variables.$line-height-base) * 0.5); // …
+			}
+		}
+	}
+}
