@@ -1,0 +1,158 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/hairline";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/mixins/utilities";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.details-list {
+	@include breakpoints.mouse-and-bp-up(md) {
+		margin-bottom: variables.$space-xs;
+	}
+
+	li {
+		display: flex;
+		align-items: center;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			height: variables.$line-height-large-touch + variables.$border-width;
+			padding: variables.$border-width variables.$default-padding-x-touch 0;
+
+			@include hairline.hairline(top, "color-shade-4", $start: (2 * variables.$default-padding-x-touch + 28px));
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			height: variables.$line-height-large;
+			padding: 0 variables.$default-padding-x;
+		}
+
+		&:first-child {
+			@include breakpoints.touch-or-bp-down(sm) {
+				padding-top: 0;
+
+				@include hairline.hairline-disabled(top);
+			}
+		}
+
+		&.selected {
+			@include breakpoints.touch-or-bp-down(sm) {
+				background-color: var(--color-accent);
+				color: var(--primary-on-accent);
+
+				@include hairline.hairline-disabled(top);
+
+				& + li {
+					padding-top: 0;
+					border-top: variables.$border-width solid common.$focus-color;
+
+					@include hairline.hairline-disabled(top);
+				}
+			}
+
+			@include breakpoints.mouse-and-bp-up(md) {
+				background-color: var(--color-shade-3);
+			}
+		}
+
+		&:focus {
+			outline: none;
+
+			@include breakpoints.mouse-and-bp-up(md) {
+				color: var(--primary-on-accent);
+				background-color: var(--color-accent);
+			}
+		}
+
+		.icon {
+			@include selectors.state("li.selected") {
+				@include breakpoints.touch-or-bp-down(sm) {
+					color: var(--primary-on-accent);
+				}
+			}
+
+			@include selectors.state("li:focus") {
+				color: var(--primary-on-accent);
+			}
+		}
+
+		> .icon {
+			&:first-of-type {
+				@include breakpoints.touch-or-bp-down(sm) {
+					margin-right: variables.$default-padding-x-touch;
+				}
+
+				@include breakpoints.mouse-and-bp-up(md) {
+					margin-right: variables.$space-xs;
+				}
+			}
+		}
+
+		> .dropdown {
+			display: flex;
+		}
+
+		> .btn,
+		> .icon-spin,
+		> .dropdown > .btn {
+			flex: 0 0 auto;
+
+			@include breakpoints.mouse-and-bp-up(md) {
+				padding: 0;
+				border: 0;
+
+				@include selectors.state("li:not(:focus-within)") {
+					opacity: 0.01;
+				}
+
+				@include selectors.state("li:hover", "li:focus-within") {
+					opacity: 1;
+				}
+
+				&:not(:last-child) {
+					margin-right: 6px; // Like 8px for 14px icons
+				}
+			}
+
+			@include breakpoints.mouse-keyboard-and-bp-up(md) {
+				&:focus {
+					box-shadow: none;
+					border-color: transparent;
+					outline: variables.$outline-width solid common.$focus-color;
+				}
+			}
+
+			&.btn-circle {
+				@include breakpoints.touch-or-bp-down(sm) {
+					margin-left: 2 * variables.$space-min;
+				}
+			}
+		}
+
+		a {
+			flex: 1 1 auto;
+			color: var(--color-shade-9);
+
+			@include utilities.text-truncate;
+		}
+
+		.truncate,
+		a:not(.btn-icon) {
+			margin-right: variables.$space-xs;
+		}
+
+		.truncate {
+			flex: 1 1 auto;
+		}
+
+		.editable {
+			margin-right: 6px; // Optical $space-xs
+		}
+
+		.icon-minus-circle-strong {
+			@include breakpoints.touch-or-bp-down(sm) {
+				color: var(--accent-red);
+			}
+		}
+	}
+}
+

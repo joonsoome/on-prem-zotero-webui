@@ -1,0 +1,71 @@
+@use "../abstracts/variables";
+@use "../abstracts/mixins/selectors";
+@use "../themes/common";
+
+.ongoing-pane {
+	flex: 0 0 auto;
+	overflow: hidden;
+	transition: height 0.25s ease;
+	height: 0;
+
+	&.flash {
+		animation: .33s 2 flash-background;
+
+		@keyframes flash-background {
+			0% {
+				background-color: var(transparent);
+
+			}
+
+			50% {
+				background-color: var(--color-shade-10);
+			}
+
+			100% {
+				background-color: var(transparent);
+			}
+		}
+	}
+
+	&:empty {
+		height: 0;
+	}
+
+	.process {
+		border-top: variables.$border-width solid common.$ongoing-border-color;
+
+		@include selectors.state('.ongoing-pane.flash') {
+			animation: .33s 2 flash-foreground;
+
+			@keyframes flash-foreground {
+				0% {
+					color: common.$ongoing-color;
+				}
+
+				50% {
+					color: var(--color-accent);
+				}
+
+				100% {
+					color: common.$ongoing-color;
+				}
+			}
+		}
+	}
+}
+
+
+.ongoing-pane,
+.ongoing-modal {
+	.process {
+		align-items: center;
+		color: common.$ongoing-color;
+		display: flex;
+		font-weight: bold;
+		padding: variables.$space-xs variables.$default-padding-x;
+	}
+
+	.ongoing-text {
+		flex: auto;
+	}
+}

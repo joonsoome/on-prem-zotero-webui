@@ -1,0 +1,91 @@
+@use "../../abstracts/mixins/breakpoints";
+@use "../../abstracts/mixins/selectors";
+@use "../../abstracts/variables";
+@use "../../themes/common";
+
+.tab-pane.notes {
+	@include breakpoints.mouse-and-bp-only(md) {
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: min-content auto;
+		grid-auto-flow: column;
+		height: 100%;
+
+		&.active:not(.loading) {
+			display: grid;
+		}
+	}
+
+	@include breakpoints.mouse-and-bp-up(lg) {
+		height: 100%; // Fix rich-editor height in Safari
+	}
+
+	> .toolbar {
+		height: variables.$toolbar-height-touch;
+
+		@supports not (-webkit-font-smoothing: subpixel-antialiased) {
+			.scrollbar-style-permanent & {
+				height: variables.$toolbar-height-touch + variables.$border-width;
+				border-bottom: variables.$border-width solid common.$notes-toolbar-border-color;
+			}
+		}
+
+		.counter {
+			margin-right: variables.$space-xs;
+		}
+	}
+
+	.scroll-container-mouse {
+		display: flex;
+		flex-direction: column;
+
+		@include breakpoints.mouse-and-bp-up(lg) {
+			flex: 1 0 0;
+			min-height: 62px;
+			max-height: 62px * 3;
+		}
+	}
+
+	.no-selection-placeholder {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: common.$note-placeholder-color;
+		font-size: variables.$font-size-h1;
+
+		@include breakpoints.mouse-and-bp-only(md) {
+			border-left: variables.$border-width solid common.$editor-border-color;
+			grid-column: 2;
+			grid-row: 1 / 3;
+		}
+
+		@include breakpoints.mouse-and-bp-up(lg) {
+			flex: 1 0 33%;
+			border-top: variables.$border-width solid common.$editor-border-color;
+		}
+	}
+
+	.rich-editor {
+		@include breakpoints.mouse-and-bp-only(md) {
+			grid-column: 2;
+			grid-row: 1 / 3;
+
+			&:not(:only-child) {
+				border-left: variables.$border-width solid common.$editor-border-color;
+			}
+
+			&:only-child {
+				grid-column: 1 / 3;
+			}
+		}
+
+		@include breakpoints.mouse-and-bp-up(lg) {
+			&:not(:only-child) {
+				flex: 1 0 33%;
+			}
+
+			&:only-child {
+				flex: 1 1 0;
+			}
+		}
+	}
+}

@@ -1,0 +1,13 @@
+.collection-select-modal {
+	align-items: normal; // Stretch modal
+	display: flex;
+	flex-direction: column;
+
+	.modal-body {
+		flex: 1 1 0;
+		display: flex;
+		flex-direction: column;
+		padding: 0;
+		overflow: hidden; // Scroll inside collection-tree
+	}
+}

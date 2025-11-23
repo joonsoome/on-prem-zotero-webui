@@ -1,0 +1,68 @@
+@use "sass:math";
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/mixins/utilities";
+@use "../abstracts/variables";
+
+.auto-resizer {
+	flex: 0 0 auto;
+	margin-right: auto;
+	position: relative;
+	max-width: 100%;
+
+	// Textarea
+	&.vertical {
+		flex: 1 1 auto; // Full width
+	}
+
+	.content {
+		@include utilities.text-truncate;
+
+		color: transparent;
+		line-height: normal; // Todo: only when containing editables
+		min-width: variables.$space-sm;
+
+		.textarea & {
+			white-space: pre-wrap;
+			word-wrap: break-word;
+
+			.editing & {
+				@include breakpoints.touch-or-bp-down(sm) {
+					padding: 0 variables.$input-btn-padding-x-touch;
+				}
+			}
+
+			&::after {
+				content: "\200b"; // Permanently insert a zero-width character to expand textareas at newlines
+			}
+		}
+
+		@include selectors.state(".auto-resizer.vertical") {
+			line-height: variables.$line-height-base;
+
+			@include breakpoints.touch-or-bp-down(sm) {
+				min-height: math.round(variables.$auto-resizer-vertical-rows * variables.$font-size-mobile * variables.$line-height-base-mobile);
+			}
+
+			@include breakpoints.mouse-and-bp-up(md) {
+				min-height: math.round(variables.$auto-resizer-vertical-rows * variables.$font-size-base * variables.$line-height-base);
+
+				@include selectors.state(".busy .auto-resizer") {
+					min-height: auto;
+				}
+			}
+		}
+	}
+
+	:last-child {
+		position: absolute;
+		inset: 0;
+
+		@include selectors.state(".auto-resizer.vertical") {
+			@include breakpoints.touch-or-bp-down(sm) {
+				min-height: 0;
+				height: 100%; // Address #196
+			}
+		}
+	}
+}

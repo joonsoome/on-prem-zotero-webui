@@ -1,0 +1,19 @@
+@use "../abstracts/variables";
+
+.tab-pane.related {
+	> .toolbar {
+		height: variables.$toolbar-height-touch;
+
+		.counter {
+			margin-right: variables.$space-xs;
+		}
+	}
+}
+
+.related-list {
+	margin-top: variables.$space-xs;
+
+	li a {
+		color: inherit;
+	}
+}

@@ -1,0 +1,64 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/hairline";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/variables";
+
+.sidebar {
+	display: flex;
+	flex-direction: column;
+	background: var(--material-sidepane);
+	overflow: hidden;
+	position: relative;
+	min-height: 0;
+
+	@include breakpoints.touch-or-bp-down(sm) {
+		@include hairline.hairline(right, "color-shade-4");
+	}
+
+	@include breakpoints.bp-down-normalized(xs) {
+		position: absolute;
+		inset: variables.$touch-header-height 0 0 0;
+		overflow: visible; // Allow touch-tag-selector to overflow
+
+		@include hairline.hairline-disabled(right);
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		border-right: var(--material-border-quarternary);
+	}
+
+	@include breakpoints.bp-up(sm) {
+		flex: 0 0 variables.$sidebar-width-sm;
+	}
+
+	@include breakpoints.bp-up(md) {
+		flex: 0 0 variables.$sidebar-width-md;
+
+		.touch & {
+			flex: 0 0 variables.$sidebar-width-md-touch;
+		}
+	}
+
+	@include breakpoints.bp-up(lg) {
+		flex: 0 0 variables.$sidebar-width-lg;
+
+		.touch & {
+			flex: 0 0 variables.$sidebar-width-lg-touch;
+		}
+	}
+
+	.touch-footer {
+		@include breakpoints.bp-down(xs) {
+			z-index: variables.$z-index-touch-side-footer;
+			transition: transform variables.$nav-transition;
+
+			.touch-tag-selector-active.view-item-details-active & {
+				transform: translate3d(-25%, 0, 0);
+			}
+		}
+
+		.btn {
+			margin-left: -7px; // Center with collection icons
+		}
+	}
+}

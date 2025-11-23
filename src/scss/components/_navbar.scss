@@ -1,0 +1,231 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/mixins/utilities";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.navbar {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	font-size: variables.$navbar-font-size;
+	width: 100%;
+	height: variables.$navbar-height-xs;
+	position: relative;
+	left: 0;
+	padding: 0 variables.$space-md;
+	background-color: common.$navbar-bg;
+	font-family: "AvenirNextLTPro", variables.$font-family-sans-serif;
+	-webkit-font-smoothing: auto;
+	-moz-osx-font-smoothing: auto;
+
+	@include breakpoints.bp-up(sm) {
+		flex: 0 0 auto;
+		height: variables.$navbar-height-sm;
+		background: common.$navbar-bg;
+	}
+
+	.nav-link {
+		white-space: nowrap;
+	}
+
+	.navbar-brand,
+	.search-toggle,
+	.search,
+	.navbar-toggle {
+		position: relative;
+		z-index: variables.$z-index-navbar;
+	}
+
+	.navbar-brand {
+		display: flex;
+		margin: 0;
+		margin-right: auto;
+
+		a {
+			display: block;
+			width: variables.$navbar-brand-width-xs;
+			height: variables.$navbar-brand-height-xs;
+
+			@include breakpoints.bp-up(sm) {
+				width: variables.$navbar-brand-width-sm;
+				height: variables.$navbar-brand-height-sm;
+			}
+
+			&:focus {
+				.keyboard & {
+					outline-offset: 8px;
+				}
+			}
+		}
+	}
+
+	.main-nav {
+		display: none;
+		padding-left: variables.$space-sm;
+
+		@media (min-width: variables.$navbar-breakpoint) {
+			display: flex;
+		}
+
+		.nav-link {
+			color: common.$navbar-link-color;
+
+			@include selectors.state(".active .nav-link") {
+				color: common.$navbar-link-active-color;
+			}
+
+			html:not(.specifity) & {
+				padding: variables.$navbar-padding-y variables.$navbar-padding-x;
+			}
+
+			&:focus {
+				.keyboard & {
+					outline-offset: -(variables.$outline-width);
+				}
+			}
+		}
+
+		.dropdown-toggle {
+			html:not(.specifity) & {
+				@include selectors.state(".show .dropdown-toggle") {
+					color: common.$navbar-dropdown-toggle-active-color;
+
+					.icon {
+						color: inherit;
+					}
+				}
+			}
+		}
+
+		.truncate {
+			@include utilities.text-truncate;
+
+			display: inline-block;
+			vertical-align: bottom;
+			max-width: 9vw;
+		}
+	}
+
+	.input-group.search {
+		flex: 1 1 auto;
+		align-self: center;
+		max-width: variables.$search-width;
+		font-size: 14px;
+		line-height: 20px; // Special height, like Upgrade button on zotero.org
+		margin-left: variables.$navbar-padding-x;
+
+		@include breakpoints.bp-down(xs) {
+			display: none;
+		}
+
+		.dropdown {
+			position: absolute;
+			left: 5px;
+			top: 3px;
+		}
+	}
+
+	.search-toggle,
+	.touch-tag-selector-toggle {
+		.icon {
+			color: var(--color-shade-8);
+		}
+	}
+
+	.navbar-toggle {
+		@include breakpoints.bp-down-normalized(xs) {
+			padding: 11px 8px;
+			margin-right: -(variables.$space-xs);
+		}
+
+		@include breakpoints.bp-up-normalized(sm) {
+			padding: 6px 7px;
+			margin: 0 (-(variables.$space-xs)) 0 (2 * variables.$navbar-padding-x - variables.$space-xs);
+		}
+
+		.icon-bar {
+			display: block;
+			width: variables.$icon-bar-width;
+			height: variables.$icon-bar-height;
+			background: var(--color-shade-8);
+
+			& + .icon-bar {
+				margin-top: variables.$icon-bar-spacing;
+			}
+		}
+	}
+
+	html:not(.specifity) & {
+		.dropdown-menu {
+			padding: variables.$space-xs 0;
+			min-width: 160px;
+			margin: 2px 0 0;
+			box-shadow: none;
+			background-clip: padding-box;
+			border: 1px solid rgb(0 0 0 / 15%);
+			border-radius: 4px;
+
+			@include selectors.state(".search .dropdown-menu") {
+				padding: variables.$space-min 0;
+			}
+
+			.dropdown-item {
+				padding: variables.$space-min variables.$space-md;
+				display: flex;
+				align-items: center;
+
+				@include selectors.state(".search .dropdown-menu") {
+					padding: (4.5px + variables.$input-border-width) variables.$space-sm;
+				}
+			}
+
+			.dropdown-divider {
+				margin: variables.$space-xs 0;
+			}
+
+			.badge {
+				background-color: var(--color-background50);
+				color: var(--color-button);
+			}
+		}
+	}
+
+	.upgrade-storage {
+		font-size: 14px;
+		margin-left: 2 * variables.$navbar-padding-x;
+		text-decoration: none;
+
+		html:not(.specifity) & {
+			padding: 4.5px variables.$space-sm;
+			border-radius: variables.$input-btn-border-radius;
+		}
+	}
+
+	.settings-toggle {
+		@include breakpoints.bp-up(sm) {
+			margin-left: variables.$space-min;
+		}
+
+		.icon {
+			color: var(--color-shade-8);
+		}
+	}
+}
+
+.nav-cover {
+	position: absolute;
+	inset: 0;
+	z-index: variables.$z-index-navbar;
+	background-color: rgb(0 0 0 / 0%);
+	visibility: hidden;
+		transition:
+			background-color variables.$mobile-navbar-nav-transition,
+			visibility 0s linear variables.$nav-transition-duration;
+
+	.navbar-nav-opened & {
+		background-color: rgb(0 0 0 / 10%);
+		visibility: visible;
+		transition: background-color variables.$mobile-navbar-nav-transition;
+	}
+}

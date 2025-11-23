@@ -1,0 +1,15 @@
+@use "sass:string";
+
+$-static-path: '/static/web-library';
+
+@function asset-url($type, $path) {
+	@return url($-static-path + string.unquote("/#{$type}/#{$path}"));
+}
+
+@function image-url($path) {
+	@return asset-url("images", $path);
+}
+
+@function font-url($path) {
+	@return asset-url("fonts", $path);
+}

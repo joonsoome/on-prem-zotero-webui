@@ -1,0 +1,71 @@
+@use "../../abstracts/mixins/breakpoints";
+@use "../../abstracts/variables";
+@use "../../themes/common";
+
+.tag-color-manager {
+	display: flex;
+	padding: variables.$space-lg;
+	flex-direction: column;
+	background-color: common.$panel-bg;
+
+	.col-form-label::after {
+		content: ':';
+	}
+
+	@include breakpoints.touch-or-bp-down(sm) {
+		padding: 0;
+
+		.form {
+			margin: 0;
+		}
+	}
+
+	.col {
+		display: flex;
+	}
+
+	.info {
+		flex: 0 0 auto;
+		margin: 1em 0;
+
+		& + .info {
+			margin: 0 0 1em;
+		}
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			padding: 0 variables.$space-md;
+		}
+	}
+
+	.buttons-wrap {
+		display: flex;
+
+		.right {
+			flex: 1 0 auto;
+			display: flex;
+			justify-content: flex-end;
+
+			.btn + .btn {
+				margin-left: variables.$space-sm;
+			}
+		}
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			padding: 0 variables.$space-md;
+		}
+	}
+
+	.color-swatch {
+		width: variables.$space-md;
+		height: variables.$space-md;
+		margin-top: 4px;
+		margin-left: 4px;
+		margin-right: -4px;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			width: variables.$space-lg;
+			height: variables.$space-lg;
+			margin-top: 8px;
+		}
+	}
+}

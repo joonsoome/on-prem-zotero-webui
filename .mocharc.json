@@ -1,0 +1,8 @@
+{
+	"require": [
+		"esm",
+		"test/support/env.cjs",
+		"test/support/enzyme.cjs",
+		"test/support/local-storage.cjs"
+	]
+}

@@ -1,0 +1,33 @@
+@use "../functions/strings";
+@use "sass:selector";
+@use "sass:list";
+@use "sass:string";
+
+// State mixin
+@mixin state($states...) {
+	@each $state in $states {
+		$string: $state;
+
+		@each $token in ">", "+", "~" {
+			$string: strings.str-replace($string, $token, " ");
+		}
+
+		$string: strings.str-replace($string, "  ", " ");
+		$selectors: strings.str-parse($string, " ");
+
+		@each $sel in $selectors {
+			@if string.index(#{&}, $sel) {
+				@at-root #{selector.replace(&, $sel, $state)} {
+					@content;
+				}
+			}
+		}
+	}
+}
+
+// Variant mixin (alias)
+@mixin variant($args...) {
+	@include state($args...) {
+		@content;
+	}
+}

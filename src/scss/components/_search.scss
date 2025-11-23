@@ -1,0 +1,90 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.input-group.search {
+	.dropdown {
+		position: absolute;
+		left: 6px;
+		top: 4px;
+		z-index: variables.$z-index-menu; // We need to set the z-index here because the dropdown-menu expects a static wrapper
+	}
+
+	.dropdown-toggle {
+		padding: 0 2px; // Simulate outline-offset
+		border-radius: 0;
+	}
+
+	.icon-search-options {
+		@include breakpoints.touch-or-bp-down(sm) {
+			color: common.$icon-color; // Reset
+		}
+	}
+
+	.form-control {
+		@include breakpoints.touch-or-bp-down(sm) {
+			min-height: auto; // Reset
+			padding: 4px 0 4px variables.$input-btn-padding-x-touch;
+			border: variables.$input-border-width solid common.$input-border-color; // …
+			background-color: common.$input-bg; // …
+			border-radius: variables.$input-btn-border-radius;
+
+			&:not(:empty) {
+				padding-right: 25px;
+			}
+		}
+
+		@include breakpoints.touch-keyboard-or-bp-down(sm) {
+			&:focus {
+				border: variables.$input-border-width solid common.$focus-color;
+				box-shadow: 0 0 0 variables.$input-btn-focus-width common.$focus-color;
+			}
+		}
+	}
+
+	.with-dropdown {
+		html:not(.specifity) & {
+			padding: 5px 25px 5px 36px;
+		}
+	}
+
+	.clear {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		right: variables.$space-xs + variables.$border-width;
+		width: variables.$space-md;
+		height: variables.$space-md;
+		border: none;
+		padding: 0;
+		border-radius: 50%;
+		background-color: common.$icon-color;
+
+		html:not(.specifity).keyboard & {
+			&:focus {
+				border-color: common.$icon-color;
+				box-shadow: 0 0 0 variables.$input-btn-focus-width common.$icon-color;
+				outline: none;
+			}
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			&:active {
+				background-color: common.$icon-active-color;
+			}
+		}
+
+		.icon {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			color: common.$input-bg;
+
+			@include selectors.state(".clear:active .icon") {
+				color: common.$input-bg;
+			}
+		}
+	}
+}

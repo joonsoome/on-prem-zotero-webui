@@ -1,0 +1,6 @@
+@use "../abstracts/variables";
+
+.tick {
+	display: inline-block;
+	width: variables.$space-md;
+}

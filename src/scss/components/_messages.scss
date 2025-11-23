@@ -1,0 +1,66 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.messages {
+	position: fixed;
+	top: 0;
+	right: -(variables.$permanent-scrollbar-width);
+	z-index: variables.$z-index-errors;
+	overflow: auto;
+	width: calc(100% + #{variables.$permanent-scrollbar-width});
+	max-height: 100%;
+	padding-bottom: variables.$space-min; // Prevent clipping of box-shadow
+
+	@include breakpoints.bp-up(sm) {
+		width: variables.$error-width + 2 * variables.$error-spacing + variables.$permanent-scrollbar-width;
+	}
+
+	&:empty {
+		display: none;
+	}
+
+	.message {
+		width: calc(100% - #{2 * variables.$error-spacing + variables.$permanent-scrollbar-width});
+		background: common.$message-bg;
+		padding: variables.$space-xs variables.$default-padding-x;
+		padding-right: variables.$space-md + 2 * variables.$default-padding-x;
+		border-left: 3px solid;
+		box-shadow: common.$menu-box-shadow;
+		border-radius: variables.$menu-border-radius;
+		margin: variables.$error-spacing;
+		user-select: text;
+		position: relative;
+
+		&.error {
+			border-left-color: common.$error;
+		}
+
+		&.info {
+			border-left-color: common.$info;
+		}
+
+		&.warning {
+			border-left-color: common.$warning;
+		}
+
+		@include breakpoints.bp-up(sm) {
+			width: variables.$error-width;
+		}
+	}
+
+	header {
+		font-weight: 700;
+	}
+
+	.btn {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			padding: 0 (variables.$space-sm - variables.$input-border-width);
+		}
+	}
+}

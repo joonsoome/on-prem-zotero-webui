@@ -1,0 +1,28 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/variables";
+
+.searchbar {
+	position: relative;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	padding: 0 variables.$default-padding-x-touch;
+	background: var(--color-toolbar);
+	z-index: variables.$z-index-search-bar;
+
+	.input-group.search {
+		margin: 0 variables.$default-padding-x-touch 0 (-(variables.$default-padding-x-touch) + variables.$space-min);
+		position: relative;
+
+		.form-control {
+			@include breakpoints.bp-down-normalized(xs) {
+				padding-left: 38px;
+			}
+		}
+	}
+
+	.item-actions-touch {
+		margin-left: variables.$default-padding-x-touch;
+	}
+}
+

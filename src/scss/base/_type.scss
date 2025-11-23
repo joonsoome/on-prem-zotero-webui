@@ -1,0 +1,77 @@
+@use "../abstracts/variables";
+@use "../themes/common";
+
+// Font Smoohting
+
+body {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+
+// Headings
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: variables.$headings-font-family;
+	color: common.$headings-color;
+	margin: 0;
+	font-weight: variables.$headings-font-weight;
+	font-size: inherit;
+	line-height: inherit;
+}
+
+.h1, .h2 {
+	line-height: variables.$headings-line-height;
+	margin-bottom: 1rem;
+}
+
+.h1 {
+	font: {
+		family: blinkmacsystemfont, "HelveticaNeue-Light", "Helvetica Neue Light",
+			"Helvetica Neue", helvetica, arial, sans-serif;
+		size: variables.$font-size-h1;
+		weight: 300;
+	}
+}
+
+.h2 {
+	font-size: variables.$font-size-h2;
+	margin-top: (variables.$space-md - 5px);
+}
+
+
+// Paragraph
+
+p {
+	margin: 0 0 1em;
+}
+
+
+// Links
+
+a {
+	color: common.$link-color;
+	text-decoration: none;
+
+	&:hover {
+		color: common.$link-hover-color;
+		text-decoration: variables.$link-hover-decoration;
+	}
+}
+
+
+// Lists
+
+ul, ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+
+// Text selection
+
+::selection {
+	color: common.$text-selection-color;
+	background-color: common.$text-selection-bg;
+}

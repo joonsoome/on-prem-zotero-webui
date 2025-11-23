@@ -1,0 +1,95 @@
+
+// Abstracts
+@use "abstracts/variables";
+@use "abstracts/functions";
+@use "abstracts/mixins";
+@use "abstracts/utilities";
+
+// Theme
+@use "themes/light";
+@use "themes/dark";
+
+// Base
+@use "base/fonts";
+@use "base/normalize";
+@use "base/base";
+@use "base/type";
+
+// Partials
+@use "partials/focus";
+@use "partials/sidebar";
+@use "partials/navs";
+@use "partials/forms";
+@use "partials/loading-cover";
+@use "partials/transitions";
+@use "partials/grid";
+@use "partials/inline-feedback";
+@use "partials/scroll-container";
+@use "partials/badge";
+@use "partials/details-list";
+@use "partials/scrollbar";
+@use "partials/common" as common2;
+
+// Components
+@use "../../modules/web-common/scss/select";
+@use "../../modules/web-common/scss/icon";
+@use "components/button";
+@use "components/bibliography";
+@use "components/citation-options";
+@use "components/copy-citation";
+@use "components/collection-tree";
+@use "components/dropdown"; // switch to "../../modules/web-common/scss/dropdown" but with scopedVariant
+@use "components/editable";
+@use "components/icon-extra";
+@use "components/panel";
+@use "components/tabs"; // "../../modules/web-common/scss/tabs" does not support scopedVariant and touch-specific shenanigans
+@use "components/toolbar";
+@use "components/touch-header";
+@use "components/touch-footer";
+@use "components/touch-nav";
+@use "components/search";
+@use "components/searchbar";
+@use "components/auto-resizer";
+@use "components/color-picker";
+@use "components/library";
+@use "components/navbar";
+@use "components/nav-sidebar";
+@use "components/item/list";
+@use "components/item/table";
+@use "components/item/details";
+@use "components/item/drilldown";
+@use "components/metadata/list" as list2;
+@use "components/metadata/pane";
+@use "components/metadata/abstract";
+@use "components/metadata/title";
+@use "components/metadata/creators";
+@use "components/note/pane" as pane2;
+@use "components/note/list" as list3;
+@use "components/tag/pane" as pane3;
+@use "components/tag/list" as list4;
+@use "components/tag/selector";
+@use "components/tag/touch-selector";
+@use "components/tag/tag-color-manager";
+@use "components/attachment/pane" as pane4;
+@use "components/attachment/list" as list5;
+@use "components/related";
+@use "components/modal/react-modal";
+@use "components/modal/collection-select";
+@use "components/modal/bibliography" as bibliography2;
+@use "components/modal/settings";
+@use "components/modal/style-installer";
+@use "components/modal/note";
+@use "components/modal/identifier-picker";
+@use "components/modal/manage-tags";
+@use "components/modal/metadata-retrieval";
+@use "components/modal/modal-item-picker";
+@use "components/drag-layer";
+@use "components/rich-editor";
+@use "components/popover";
+@use "components/messages";
+@use "components/ongoing";
+@use "components/new-item-selector";
+@use "components/crash-handler";
+@use "components/reader";
+
+

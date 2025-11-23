@@ -1,0 +1,81 @@
+@use "sass:map";
+@use "../mixins/breakpoints";
+@use "../variables";
+
+// Responsive visibility
+@each $bp in map.keys(variables.$grid-breakpoints) {
+  .hidden-#{$bp}-up {
+    @include breakpoints.bp-up($bp) {
+      display: none !important;
+    }
+  }
+
+  .hidden-#{$bp}-down {
+    @include breakpoints.bp-down($bp) {
+      display: none !important;
+    }
+  }
+}
+
+// Responsive visibility for 'mouse devices' only
+@each $bp in map.keys(variables.$grid-breakpoints) {
+	html:not(.touch) .hidden-mouse-#{$bp}-up {
+		@include breakpoints.bp-up($bp) {
+			display: none !important;
+		}
+	}
+
+  html:not(.touch) .hidden-mouse-#{$bp}-down {
+    @include breakpoints.bp-down($bp) {
+      display: none !important;
+    }
+  }
+}
+
+.hidden-mouse,
+.touch {
+	@include breakpoints.mouse-and-bp-up(md) {
+		display: none !important;
+	}
+}
+
+
+// Responsive visibility for 'touch devices' only
+
+@each $bp in map.keys(variables.$grid-breakpoints) {
+	.touch .hidden-touch-#{$bp}-up {
+		@include breakpoints.bp-up($bp) {
+			display: none !important;
+		}
+	}
+
+  .touch .hidden-touch-#{$bp}-down {
+    @include breakpoints.bp-down($bp) {
+      display: none !important;
+    }
+  }
+}
+
+.hidden-touch,
+.mouse {
+	@include breakpoints.touch-or-bp-down(sm) {
+		display: none !important;
+	}
+}
+
+.hidden {
+	display: none !important;
+}
+
+
+// Screen readers only
+.offscreen {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

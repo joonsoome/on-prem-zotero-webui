@@ -1,0 +1,371 @@
+@use "sass:math";
+@use "../../abstracts/functions/asset-url";
+@use "../../abstracts/mixins/breakpoints";
+@use "../../abstracts/mixins/selectors";
+@use "../../abstracts/variables";
+@use "../../themes/common";
+
+// Creators field
+.creators-entry {
+	position: relative;
+
+	&.color-exit, &.color-exit .select-value {
+		color: var(--accent-blue);
+	}
+
+	&.color-exit-active, &.color-exit-active .select-value {
+		color: inherit;
+		transition: color variables.$creator-color-transition;
+		transition-delay: variables.$creator-color-transition-delay;
+	}
+
+
+	@include selectors.state(".panel.editing .creators-entry") {
+		@include breakpoints.touch-or-bp-down(sm) {
+			$handle-width: 2 * variables.$default-padding-x-touch + variables.$space-lg + variables.$input-border-width;
+
+			padding-left: 2 * variables.$default-padding-x-touch + variables.$space-lg;
+			padding-right: $handle-width;
+			background: asset-url.image-url("icons/chevron-13.svg") no-repeat right ($handle-width + 4px) center common.$input-bg;
+
+			&.single,
+			&.virtual {
+				padding-right: 0;
+				background-position: right 12px center; // 16px
+			}
+
+			&::before {
+				left: 2 * variables.$default-padding-x-touch + variables.$space-lg;
+			}
+		}
+
+		@include selectors.state(".title + .creators-entry") {
+			@include breakpoints.bp-up-normalized(sm) {
+				padding-top: 0;
+				border-top-left-radius: variables.$input-border-radius;
+				border-top-right-radius: variables.$input-border-radius;
+			}
+
+			&::before {
+				@include breakpoints.bp-down-normalized(xs) {
+					left: 0;
+				}
+
+				@include breakpoints.bp-up-normalized(sm) {
+					content: none;
+				}
+			}
+		}
+
+		// Creators focus state
+		&:focus {
+			.keyboard:not(.specifity) & {
+				outline: none;
+				z-index: 2;
+
+				&::before,
+				&::after {
+					content: "";
+					position: absolute;
+					left: 0;
+					right: 0;
+					height: variables.$outline-width;
+					background-color: common.$focus-color;
+				}
+
+				&::before {
+					top: auto;
+					bottom: calc(100% - #{variables.$input-border-width});
+				}
+
+				&::after {
+					top: 100%;
+				}
+			}
+		}
+	}
+
+	.key {
+		@include breakpoints.touch-or-bp-down(sm) {
+			@include selectors.state(".editing .creators-entry.virtual") {
+				flex-basis: calc((100% - #{2 * variables.$default-padding-x-touch + variables.$input-border-width + variables.$space-lg}) * #{math.div(variables.$metadata-list-offset, 100%)}
+				); // Align with creators
+			}
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			justify-content: flex-end;
+
+			.input-group {
+				flex: 0 0 auto;
+				max-width: 100%;
+			}
+
+			.select-component {
+				padding: 0;
+				border: none;
+				background-color: transparent;
+				line-height: normal;
+				color: common.$key-color;
+				user-select: none; // Reset
+				box-shadow: none;
+
+				.select-control {
+					justify-content: flex-end;
+					background-color: transparent;
+					border: none;
+					padding: 0;
+					box-shadow: none;
+
+					@include selectors.state(".select-component:hover", ".select-component.is-focused") {
+						@include selectors.state(".select-component:not(.is-disabled)") {
+							cursor: pointer;
+							color: common.$link-color;
+						}
+					}
+				}
+
+				.select-multi-value-wrapper {
+					flex: 0 0 auto;
+					max-width: 100%;
+				}
+
+				.select-value {
+					flex: 0 0 auto;
+					position: static;
+					padding: 0;
+					max-width: 100%;
+				}
+
+				.select-input {
+					position: absolute;
+				}
+
+				.select-arrow-container {
+					order: -1;
+				}
+
+				.select-arrow {
+					background-image: asset-url.image-url("icons/chevron-7-777.svg");
+					display: none;
+
+					@include selectors.state(".creators-entry:hover") {
+						@include selectors.state(".select-component:not(.is-disabled)") {
+							display: block;
+						}
+					}
+
+					@include selectors.state(".select-component:hover") {
+						background-image: asset-url.image-url("icons/chevron-7-secondary.svg");
+					}
+
+					@include selectors.state(".select-component.is-focused") {
+						display: block;
+						background-image: asset-url.image-url("icons/chevron-7-secondary.svg");
+					}
+				}
+
+				.select-menu-outer {
+					text-align: left;
+					width: auto;
+					white-space: nowrap;
+					right: auto;
+				}
+			}
+		}
+	}
+
+	.value {
+		@include breakpoints.touch-or-bp-down(sm) {
+			@include selectors.state(".editing", ".creators-entry") {
+				align-items: center;
+				padding-right: variables.$creators-value-padding-right-touch;
+			}
+
+			@include selectors.state(".editing .creators-entry.single", ".editing .creators-entry.virtual") {
+				padding-right: variables.$creators-value-padding-right-touch + variables.$space-xs;
+			}
+
+			@include selectors.state(".creators-entry.virtual") {
+				color: common.$placeholder-color;
+			}
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			> *:not(:first-child) {
+				margin-left: 2px;
+			}
+
+			> *:not(:last-child) {
+				margin-right: 2px;
+			}
+
+			.editable {
+				flex: 1 1 0;
+
+				::placeholder {
+					color: transparent; // Hide
+				}
+
+				&:first-child {
+					@include selectors.state(".creators-entry.creators-twoslot") {
+						display: flex;
+						flex: 0 1 auto;
+						max-width: calc(#{variables.$creators-last-name-max-width} - 30px); // Substract buttons and margins / 2
+
+						&::after {
+							content: ",";
+							flex: 0 0 auto;
+						}
+
+						.editable-content {
+							position: relative;
+							z-index: 1; // Higher than comma
+						}
+
+						.input-group {
+							flex: 1 1 auto;
+						}
+					}
+				}
+
+				&:last-of-type {
+					margin-right: 6px; // 8px
+				}
+			}
+		}
+
+		.btn {
+			padding: 0;
+			border: none;
+			width: variables.$space-md;
+			height: variables.$space-md;
+			flex: 0 0 auto;
+
+			@include breakpoints.touch-or-bp-down(sm) {
+				display: none;
+			}
+
+			@include selectors.state(".creators-entry:not(:focus-within)") {
+				@include breakpoints.mouse-and-bp-up(md) {
+					visibility: hidden;
+				}
+			}
+
+			@include selectors.state(".creators-entry:hover", ".creators-entry:focus-within") {
+				@include breakpoints.mouse-and-bp-up(md) { // Repeat for specifity
+					visibility: visible;
+				}
+			}
+
+			&:focus {
+				@include breakpoints.touch-or-bp-down(sm) {
+					outline: none;
+					box-shadow: 0 0 0 2px var(--accent-red);
+				}
+
+				@include breakpoints.mouse-keyboard-and-bp-up(md) {
+					box-shadow: none;
+					outline: variables.$outline-width solid common.$focus-color;
+				}
+			}
+
+			.icon {
+				display: none;
+			}
+		}
+
+		.btn-single-dual {
+			width: 17px;
+			margin-left: variables.$space-min + variables.$input-btn-focus-width + variables.$input-border-width;
+
+			@include selectors.state(".creators-entry.creators-twoslot") {
+				background: asset-url.image-url("icons/input-single.svg") no-repeat center center;
+
+				&:active {
+					background-image: asset-url.image-url("icons/input-single-active.svg");
+				}
+			}
+
+			@include selectors.state(".creators-entry.creators-oneslot") {
+				background: asset-url.image-url("icons/input-dual.svg") no-repeat center center;
+
+				&:active {
+					background-image: asset-url.image-url("icons/input-dual-active.svg");
+				}
+			}
+		}
+
+		.btn-minus {
+			width: 14px;
+			background: asset-url.image-url("icons/minus-circle.svg") no-repeat center center;
+
+			@include breakpoints.touch-or-bp-down(sm) {
+				@include selectors.state(".editing .creators-entry") {
+					display: block;
+					position: absolute;
+					left: variables.$default-padding-x-touch;
+					top: (variables.$line-height-large-touch - variables.$space-lg) * 0.5;
+					margin-right: variables.$default-padding-x-touch;
+					width: variables.$space-lg;
+					height: variables.$space-lg;
+					background: asset-url.image-url("icons/24/minus-circle-strong.svg") no-repeat center center;
+					border: 1px solid var(--accent-red);
+					border-radius: 50%;
+				}
+			}
+
+			&:active {
+				background-image: asset-url.image-url("icons/minus-circle-active.svg");
+			}
+		}
+
+		.btn-plus {
+			width: 14px;
+			background: asset-url.image-url("icons/plus-circle.svg") no-repeat center center;
+
+			&:active {
+				background-image: asset-url.image-url("icons/plus-circle-active.svg");
+			}
+		}
+	}
+
+	.handle {
+		cursor: move;
+		display: none;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			align-self: stretch;
+			align-items: center;
+			flex: 0 0 auto;
+			padding: 0 variables.$default-padding-x-touch;
+			border-left: 1px solid common.$input-border-color;
+			margin-right: -(2 * variables.$default-padding-x-touch + variables.$space-lg + variables.$input-border-width);
+			touch-action: manipulation;
+
+			@include selectors.state(".editing .creators-entry") {
+				display: flex;
+			}
+
+			.icon-grip {
+				color: common.$handle-color-touch;
+			}
+		}
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			align-items: center;
+			position: absolute;
+			left: 0;
+			top: 0;
+			height: 100%;
+
+			@include selectors.state(".metadata-list:not(.dnd-in-progress) .creators-entry:hover") {
+				display: flex;
+			}
+
+			.icon-grip {
+				color: common.$handle-color-mouse;
+			}
+		}
+	}
+}

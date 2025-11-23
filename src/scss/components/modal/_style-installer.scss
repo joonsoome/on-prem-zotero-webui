@@ -1,0 +1,102 @@
+@use "../../abstracts/mixins/breakpoints";
+@use "../../abstracts/mixins/hairline";
+@use "../../abstracts/mixins/selectors";
+@use "../../abstracts/variables";
+@use "../../themes/common";
+
+.style-installer {
+	.modal-body {
+		padding-top: 0;
+		padding-bottom: 0;
+
+		&:focus {
+			.keyboard & {
+				padding-left: variables.$modal-inner-padding - variables.$outline-width;
+				padding-right: variables.$modal-inner-padding - variables.$outline-width;
+				border-bottom-left-radius: variables.$modal-border-radius;
+				border-bottom-right-radius: variables.$modal-border-radius;
+			}
+		}
+	}
+
+	.style-search {
+		position: sticky;
+		top: 0;
+		z-index: variables.$z-index-search-bar;
+		padding: variables.$modal-inner-padding 0;
+		background-color: common.$modal-content-bg;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			margin-left: -(variables.$modal-inner-padding);
+			margin-right: -(variables.$modal-inner-padding);
+			padding-left: variables.$modal-inner-padding;
+			padding-right: variables.$modal-inner-padding;
+		}
+
+		@include selectors.state(".keyboard .style-installer .modal-body:focus") {
+			padding-top: variables.$modal-inner-padding - variables.$outline-width;
+		}
+	}
+
+	.style-list {
+		margin-bottom: variables.$modal-inner-padding;
+
+		@include breakpoints.mouse-and-bp-up(md) {
+			padding: 0 variables.$space-xs;
+		}
+
+		&:empty {
+			display: none;
+		}
+
+		@include selectors.state(".keyboard .style-installer .modal-body:focus") {
+			margin-bottom: variables.$modal-inner-padding - variables.$outline-width;
+		}
+
+		.style {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: variables.$space-xs 0;
+
+			@include breakpoints.touch-or-bp-down(sm) {
+				padding-top: variables.$space-xs + variables.$border-width;
+
+				@include hairline.hairline(top, "color-shade-4", $start: (variables.$space-lg + variables.$default-padding-x-touch), $end: -16px);
+			}
+
+			@include breakpoints.mouse-and-bp-up(md) {
+				border-top: variables.$border-width solid common.$modal-border-color;
+			}
+
+			&:first-child {
+				@include breakpoints.touch-or-bp-down(sm) {
+					padding-top: variables.$space-xs;
+
+					@include hairline.hairline-disabled(top);
+				}
+
+				@include breakpoints.mouse-and-bp-up(md) {
+					border-top: none;
+				}
+			}
+
+			.style-title {
+				flex: 1 1 auto;
+			}
+
+			.btn {
+				flex: 0 0 auto;
+
+				@include breakpoints.touch-or-bp-down(sm) {
+					order: -1;
+					margin-right: variables.$default-padding-x-touch;
+				}
+
+				@include breakpoints.mouse-and-bp-up(md) {
+					min-width: 70px;
+				}
+			}
+		}
+	}
+}

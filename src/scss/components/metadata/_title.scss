@@ -1,0 +1,32 @@
+@use "../../abstracts/mixins/breakpoints";
+@use "../../abstracts/mixins/selectors";
+@use "../../abstracts/variables";
+
+.metadata-list {
+	.title {
+		@include breakpoints.touch-or-bp-down(sm) {
+			display: none;
+
+			@include selectors.state(".panel.editing .metadata-list") {
+				display: flex;
+				margin-bottom: variables.$form-group-margin-touch;
+				border-bottom-left-radius: variables.$input-btn-border-radius;
+				border-bottom-right-radius: variables.$input-btn-border-radius;
+			}
+		}
+
+		@include breakpoints.bp-down-normalized(xs) {
+			@include selectors.state(".panel.editing .metadata-list") {
+				min-height: variables.$line-height-large-touch + 2 * variables.$border-width;
+				padding-bottom: variables.$border-width;
+
+				&::after {
+					content: "";
+					left: 0;
+					top: auto;
+					bottom: 0;
+				}
+			}
+		}
+	}
+}

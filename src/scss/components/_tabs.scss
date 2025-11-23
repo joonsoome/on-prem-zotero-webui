@@ -1,0 +1,117 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/hairline";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/mixins/utilities";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.tabs {
+	display: flex;
+	border-bottom: variables.$border-width solid common.$tabs-border-color;
+
+	&.justified {
+		flex: 1 1 auto;
+		width: 100%;
+	}
+
+	.tab {
+		flex: 0 0 auto;
+		align-items: center;
+		appearance: none;
+		background: none;
+		border: none;
+		color: common.$tab-inactive-color;
+		cursor: pointer;
+		display: inline;
+		font-family: inherit;
+		font-size: variables.$font-size-base;
+		font-weight: inherit;
+		height: variables.$tabs-height;
+		justify-content: center;
+		padding: 0 variables.$tabs-padding-x;
+		text-decoration: none;
+
+		@include utilities.text-truncate;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			height: variables.$tabs-height-touch;
+		}
+
+		&:hover {
+			color: common.$tab-active-color;
+		}
+
+		&:focus {
+			.keyboard & {
+				outline-offset: -(variables.$outline-width);
+			}
+		}
+
+		&.active {
+			color: common.$tab-active-color;
+			box-shadow: inset 0 -1px common.$tab-active-color, 0 1px common.$tab-active-color;
+
+			.keyboard & {
+				&:focus-within {
+					box-shadow: none;
+				}
+			}
+		}
+
+		@include selectors.state(".tabs.compact") {
+			padding: 0 variables.$tabs-compact-padding-x;
+		}
+
+		@include selectors.state(".tabs.justified") {
+			flex: 1 1 0;
+		}
+	}
+
+	.icon {
+		margin-right: variables.$space-xs;
+	}
+}
+
+.tab-pane {
+	@include breakpoints.mouse-and-bp-up(md) {
+		display: none;
+	}
+
+	&.active {
+		@include breakpoints.mouse-and-bp-up(md) {
+			flex: 1 1 auto;
+			display: flex;
+			flex-direction: column;
+		}
+
+		&.loading {
+			html:not(.specifity) & {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100%;
+				padding: 0;
+			}
+		}
+	}
+
+	.tab-pane-heading {
+		@include breakpoints.touch-or-bp-down(sm) {
+			margin: 0;
+			line-height: variables.$line-height-large-touch;
+			padding: variables.$border-width variables.$default-padding-x-touch;
+			background: var(--material-toolbar);
+
+			@include hairline.hairline(top, "color-shade-4");
+			@include hairline.hairline(bottom, "color-shade-4");
+		}
+	}
+
+	.rich-editor {
+		@include breakpoints.mouse-and-bp-up(lg) {
+			&:not(:only-child) {
+				border-top: variables.$border-width solid common.$editor-border-color;
+			}
+		}
+	}
+}

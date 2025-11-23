@@ -1,0 +1,118 @@
+@use "../abstracts/mixins/breakpoints";
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.toolbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: stretch;
+	flex: 0 0 auto;
+	white-space: nowrap;
+	background: var(--material-toolbar);
+
+	@include breakpoints.touch-or-bp-down(sm) {
+		height: variables.$line-height-large-touch;
+		padding: 0 variables.$default-padding-x-touch;
+	}
+
+	@include breakpoints.mouse-and-bp-up(md) {
+		height: variables.$toolbar-height;
+		padding: 0 variables.$default-padding-x;
+		color: var(--fill-secondary);
+	}
+
+	@include selectors.state(".toolbar.dense") {
+		html:not(.specifity) & {
+			padding: 0 (variables.$space-min * 0.5);
+		}
+	}
+
+	.toolbar-left,
+	.toolbar-center,
+	.toolbar-right,
+	.toolbar-justified {
+		flex: 1 1 0;
+		display: flex;
+		align-items: center;
+	}
+
+	.toolbar-left {
+		margin-right: auto;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			padding-right: 3px;
+		}
+	}
+
+	.toolbar-center {
+		margin: 0 auto;
+		justify-content: center;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			padding: 0 3px;
+		}
+	}
+
+	.toolbar-right {
+		margin-left: auto;
+		justify-content: flex-end;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			padding-left: 3px;
+			position: relative; // Above touch-nav
+		}
+	}
+
+	.toolbar-justified {
+		flex: 1 1 auto;
+
+		@include breakpoints.touch-or-bp-down(sm) {
+			margin: 0 (-(variables.$default-padding-x-touch));
+		}
+	}
+
+	.tool-group {
+		display: flex;
+		align-items: center;
+
+		@include selectors.state(".toolbar .toolbar-justified") {
+			flex: 1 1 auto;
+			justify-content: space-around;
+		}
+
+		> * + * {
+			margin-left: variables.$space-min * 0.5;
+
+			@include selectors.state(".toolbar .toolbar-justified") {
+				margin: 0;
+			}
+		}
+
+		& + .tool-group {
+			margin-left: variables.$space-lg;
+		}
+
+		@include selectors.state(".toolbar.dense") {
+			position: relative;
+
+			&::before {
+				position: absolute;
+				left: 0;
+				top: 2px;
+				bottom: 2px;
+				width: variables.$border-width;
+				background-color: common.$tool-group-separator-color;
+			}
+
+			& + .tool-group {
+				margin-left: variables.$space-min * 0.5;
+				padding-left: variables.$space-min * 0.5 + variables.$border-width;
+
+				&::before {
+					content: "";
+				}
+			}
+		}
+	}
+}

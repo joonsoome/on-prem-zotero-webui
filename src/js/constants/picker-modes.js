@@ -1,0 +1,4 @@
+export const PICKS_SINGLE_ITEM = 1;
+export const PICKS_MULTIPLE_ITEMS = 2;
+export const PICKS_SINGLE_COLLECTION = 3;
+export const PICKS_MULTIPLE_COLLECTIONS = 4;

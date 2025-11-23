@@ -1,0 +1,71 @@
+@use "../abstracts/mixins/selectors";
+@use "../abstracts/variables";
+@use "../themes/common";
+
+.nav-sidebar {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: variables.$navbar-nav-mobile-width;
+	z-index: variables.$z-index-mobile-nav;
+	background-color: var(--color-nav-sidebar);
+	overflow-y: scroll;
+	font-family: "AvenirNextLTPro", variables.$font-family-sans-serif;
+	-webkit-font-smoothing: auto;
+	-moz-osx-font-smoothing: auto;
+	font-size: variables.$navbar-font-size;
+	transform: variables.$mobile-navbar-nav-transform;
+	visibility: hidden;
+	transition:
+		transform variables.$mobile-navbar-nav-transition,
+		visibility 0s linear variables.$nav-transition-duration;
+
+	.navbar-nav-opened & {
+		transform: translate3d(0, 0, 0);
+		visibility: visible;
+		transition: transform variables.$mobile-navbar-nav-transition;
+	}
+
+	.mobile-nav {
+		margin: (variables.$space-xxl - 6px) 0 (variables.$space-xxl - 2px);
+	}
+
+	.nav-link {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		color: var(--color-nav-sidebar-link);
+		padding: variables.$navbar-padding-y-touch variables.$navbar-padding-x-touch;
+		position: relative;
+
+		@include selectors.state(".active .nav-link") {
+			color: common.$navbar-link-mobile-active-color;
+		}
+
+		&:focus {
+			.keyboard & {
+				outline-offset: -(variables.$outline-width);
+			}
+		}
+
+		&.separated {
+			padding-top: variables.$navbar-padding-y-touch + 1px;
+
+			&::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: variables.$space-xl;
+				right: 0;
+				border-top: 1px solid var(--color-nav-sidebar-border);
+				z-index: -1;
+			}
+		}
+
+		.badge {
+			color: var(--color-nav-sidebar);
+			background-color: var(--color-nav-sidebar-link);
+		}
+	}
+}

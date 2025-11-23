@@ -1,0 +1,194 @@
+@use "../../abstracts/mixins/breakpoints";
+@use "../../abstracts/mixins/selectors";
+@use "../../abstracts/mixins/utilities";
+@use "../../abstracts/variables";
+@use "../../themes/common";
+
+.tag-selector {
+	@include breakpoints.mouse-and-bp-up(md) {
+		flex: 0 0 variables.$tag-selector-height;
+		display: flex;
+		flex-direction: column;
+		border-top: var(--material-border-quarternary);
+		line-height: variables.$line-height-base;
+		min-height: 0;
+
+		.scroll-container {
+			overflow-y: auto;
+		}
+
+		&.collapsed {
+			flex: 0 0 variables.$tag-selector-collapsed-height;
+		}
+
+		.tag-selector-toggle {
+			flex: 0 0 auto;
+			width: 100%;
+			border: 0;
+			padding: 3px;
+			line-height: 2px;
+			background: var(--material-sidepane);
+			border-radius: 0;
+
+			@supports not (-webkit-font-smoothing: subpixel-antialiased) {
+				.scrollbar-style-permanent & {
+					border-bottom: variables.$border-width solid common.$tag-selector-border-color;
+				}
+			}
+
+			.icon {
+				vertical-align: top;
+				color: common.$tag-selector-grip-color;
+			}
+
+			&:focus .icon {
+				color: common.$tag-selector-grip-color-active;
+			}
+		}
+
+		.tag-selector-container {
+			@include selectors.state(".tag-selector.collapsed") {
+				display: none;
+			}
+		}
+
+		.tag-selector-list {
+			display: flex;
+			flex-wrap: wrap;
+			align-content: flex-start;
+			height: 100%;
+			font-size: variables.$font-size-small;
+			padding: 1px (variables.$default-padding-x - 7px) variables.$space-min (variables.$space-md - 7px);
+		}
+
+		.tag {
+			flex: 0 1 auto;
+			display: flex;
+			align-items: center;
+			padding: 0 variables.$tag-padding-x;
+			margin: variables.$space-min (variables.$space-min * 0.25);
+			border-radius: variables.$tag-border-radius;
+			cursor: pointer;
+			min-width: 0;
+
+			&:active {
+				background-color: common.$tag-selected-bg;
+			}
+
+			&:hover:not(.disabled) {
+				background-color: common.$tag-hover-bg;
+			}
+
+			&.selected {
+				background-color: common.$tag-selected-bg;
+
+				&:active {
+					background-color: common.$tag-hover-bg;
+				}
+			}
+
+			&.colored {
+				font-weight: 600;
+
+				&.selected,
+				&:active {
+					background-color: currentcolor;
+
+					@each $colorHex, $colorVar in variables.$tag-colors-lookup {
+						@include selectors.state('.tag[data-color="#{$colorHex}"]') {
+							background-color: var($colorVar);
+						}
+					}
+				}
+
+				&.selected:active {
+					background-color: common.$tag-hover-bg;
+				}
+			}
+
+			&.disabled {
+				opacity: 0.5;
+				cursor: auto;
+			}
+
+			&.dnd-target {
+				color: var(--material-background);
+				background: var(--fill-secondary);
+			}
+
+			.tag-label {
+				color: var(--fill-primary);
+
+				@include utilities.text-truncate;
+
+				@include selectors.state(".tag.selected", ".tag:active") {
+					color: var(--color-background);
+				}
+
+				@include selectors.state(".tag.selected:active") {
+					color: var(--fill-primary);
+				}
+			}
+
+			&:not(.emoji)::before {
+				@include selectors.state(".tag.colored") {
+					content: "";
+					display: block;
+					width: 10px;
+					height: 10px;
+					background-color: currentcolor;
+					margin-right: variables.$space-min;
+					border-radius: 5px;
+					border: variables.$border-width solid var(--tag-color-border);
+
+					@each $colorHex, $colorVar in variables.$tag-colors-lookup {
+						@include selectors.state('.tag[data-color="#{$colorHex}"]') {
+							background-color: var($colorVar);
+						}
+					}
+
+					@include selectors.state(".colored.selected", ".colored:active") {
+						border-color: var(--color-button);
+					}
+
+					@include selectors.state(".colored.selected:active") {
+						border-color: var(--tag-color-border);
+					}
+				}
+			}
+		}
+
+		.tag-selector-filter-container {
+			flex: 0 0 auto;
+			display: flex;
+			align-items: center;
+			background: var(--material-sidepane);
+			padding: variables.$space-min variables.$default-padding-x variables.$space-min;
+			margin-top: auto;
+
+			@include selectors.state(".tag-selector.collapsed") {
+				display: none;
+			}
+
+			@supports not (-webkit-font-smoothing: subpixel-antialiased) {
+				.scrollbar-style-permanent & {
+					border-top: variables.$border-width solid common.$tag-selector-border-color;
+				}
+			}
+		}
+
+		.dropdown {
+			flex: 0 0 auto;
+			margin-left: 5px;
+			margin-right: -(variables.$space-min) - 2px;
+		}
+	}
+
+	.tag-manager-open-info {
+		align-items: center;
+		color: common.$info-view-color;
+		display: flex;
+		flex: 1 1 auto;
+		justify-content: center;
+	}
+}
