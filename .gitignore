@@ -211,3 +211,5 @@ AGENTS.md
 README-draft.md
 .vscode/
 openspec/
+sample-webdav/
+app/web-library-build/
