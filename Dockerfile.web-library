@@ -10,10 +10,7 @@ COPY app/web-library-upstream/ /app/web-library-upstream/
 COPY app/web-library-overlay/ /app/web-library-overlay/
 
 # Apply overlay into a build directory
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends rsync gettext-base \
-    && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /app/web-library-build \
+RUN mkdir -p /app/web-library-build \
     && rsync -a /app/web-library-upstream/ /app/web-library-build/ \
     && if [ -d /app/web-library-overlay/src ]; then rsync -a /app/web-library-overlay/src/ /app/web-library-build/src/; fi \
     && if [ -d /app/web-library-overlay/config ]; then rsync -a /app/web-library-overlay/config/ /app/web-library-build/config/; fi
@@ -27,20 +24,6 @@ RUN git clone --depth 1 --recurse-submodules --shallow-submodules https://github
     && git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/zotero/web-common.git modules/web-common \
     && git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/zotero/zotero-schema.git modules/zotero-schema
 
-# Inject build-time metadata config for overlay (api key/authority, user slug/id, pdf proxy base)
-ARG ZOTERO_API_KEY=""
-ARG ZOTERO_API_AUTHORITY_PART="api.zotero.org"
-ARG ZOTERO_USER_SLUG=""
-ARG ZOTERO_USER_ID="0"
-ARG PDF_PROXY_BASE_URL="http://localhost:8280/pdf"
-ENV ZOTERO_API_KEY=$ZOTERO_API_KEY \
-    ZOTERO_API_AUTHORITY_PART=$ZOTERO_API_AUTHORITY_PART \
-    ZOTERO_USER_SLUG=$ZOTERO_USER_SLUG \
-    ZOTERO_USER_ID=$ZOTERO_USER_ID \
-    PDF_PROXY_BASE_URL=$PDF_PROXY_BASE_URL
-
-RUN envsubst < /app/web-library-overlay/src/html/index.html > /app/web-library-build/src/html/index.html
-
 # Build Web Library (combined subtree + overlay)
 RUN npm ci \
     && npm run build
@@ -48,8 +31,15 @@ RUN npm ci \
 # Runtime: serve static assets via nginx
 FROM nginx:1.27-alpine AS runtime
 
+# For envsubst and clean startup
+RUN apk add --no-cache gettext
+
 COPY --from=builder /app/web-library-build/build/ /usr/share/nginx/html/
+COPY app/web-library-overlay/config/nginx.conf /etc/nginx/conf.d/default.conf
+COPY app/web-library-overlay/scripts/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 80
 
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
