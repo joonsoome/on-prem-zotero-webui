@@ -2,20 +2,19 @@ version: "3.8"
 
 services:
   zotero-pdf-proxy:
-    image: python:3.11-slim
-    container_name: zotero-pdf-proxy
-    working_dir: /app
-    volumes:
-      - /volume1/Reference/zotero:/data/zotero
-      - ./app:/app
+    image: ${PDF_PROXY_IMAGE:-ghcr.io/joonsoome/on-prem-zotero-webui/pdf-proxy:main}
     environment:
       - ZOTERO_ROOT=/data/zotero
-    command: >
-      bash -c "
-      pip install --no-cache-dir -r requirements.txt &&
-      uvicorn main:app --host 0.0.0.0 --port 8000
-      "
+    volumes:
+      - ${ZOTERO_ROOT_HOST_PATH:-/volume1/Reference/zotero}:/data/zotero
     ports:
-      - "8280:8000"
+      - "${PDF_PROXY_PORT:-8280}:8000"
     restart: unless-stopped
 
+  web-library:
+    image: ${WEB_LIBRARY_IMAGE:-ghcr.io/joonsoome/on-prem-zotero-webui/web-library:main}
+    ports:
+      - "${WEB_LIBRARY_PORT:-8281}:80"
+    depends_on:
+      - zotero-pdf-proxy
+    restart: unless-stopped

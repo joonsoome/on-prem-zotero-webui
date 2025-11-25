@@ -2,7 +2,10 @@ version: "3.8"
 
 services:
   zotero-pdf-proxy:
-    container_name: zotero-pdf-proxy-dev
+    image: ${PDF_PROXY_IMAGE:-ghcr.io/joonsoome/on-prem-zotero-webui/pdf-proxy:dev}
+    build:
+      context: .
+      dockerfile: Dockerfile.pdf-proxy
     environment:
       - ZOTERO_ROOT=/data/zotero
     volumes:
@@ -12,7 +15,11 @@ services:
       - "${DEV_PDF_PROXY_PORT:-8280}:8000"
 
   web-library:
-    container_name: zotero-web-library-dev
-    image: ${WEB_LIBRARY_IMAGE:-zotero-web-library:dev}
+    image: ${WEB_LIBRARY_IMAGE:-ghcr.io/joonsoome/on-prem-zotero-webui/web-library:dev}
+    build:
+      context: .
+      dockerfile: Dockerfile.web-library
     ports:
       - "${DEV_WEB_LIBRARY_PORT:-8281}:80"
+    depends_on:
+      - zotero-pdf-proxy
