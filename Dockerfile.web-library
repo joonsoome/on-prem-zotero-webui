@@ -15,9 +15,17 @@ RUN mkdir -p /app/web-library-build \
     && if [ -d /app/web-library-overlay/src ]; then rsync -a /app/web-library-overlay/src/ /app/web-library-build/src/; fi \
     && if [ -d /app/web-library-overlay/config ]; then rsync -a /app/web-library-overlay/config/ /app/web-library-build/config/; fi
 
+# Fetch upstream submodules (the subtree does not vend them)
+WORKDIR /app/web-library-build
+RUN git clone --depth 1 https://github.com/citation-style-language/locales.git modules/locales \
+    && git clone --depth 1 https://github.com/zotero/reader.git modules/reader \
+    && git clone --depth 1 https://github.com/zotero/pdf-worker.git modules/pdf-worker \
+    && git clone --depth 1 https://github.com/zotero/note-editor.git modules/note-editor \
+    && git clone --depth 1 https://github.com/zotero/web-common.git modules/web-common \
+    && git clone --depth 1 https://github.com/zotero/zotero-schema.git modules/zotero-schema
+
 # Build Web Library (combined subtree + overlay)
-RUN cd /app/web-library-build \
-    && npm ci \
+RUN npm ci \
     && npm run build
 
 # Runtime: serve static assets via nginx
@@ -28,4 +36,3 @@ COPY --from=builder /app/web-library-build/build/ /usr/share/nginx/html/
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
-
