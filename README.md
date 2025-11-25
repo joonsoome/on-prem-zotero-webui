@@ -2,6 +2,9 @@
 
 **Self-hosted Zotero WebUI Opensource Library + WebDAV-based PDF viewer **Avoid storage fees, keep privacy, and still enjoy a full browser-based Zotero library.
 
+## It is PoC
+It(v0.1.3) is still fully not properly works, please keep on watching to be ready for production.
+
 ---
 
 ## 🚀 Overview
@@ -38,7 +41,7 @@ You get:
 
 ---
 ## Screenshot
-[WebUI](./docs/assets/screenshot.png)
+![WebUI](./docs/assets/screenshot.png)
 
 ## 🧩 Architecture
 
@@ -180,8 +183,14 @@ The sample data generator creates keys like `SAMPLE1` and `SAMPLE2` under `sampl
 - `.env.stage.example` → `.env.stage`: staging/NAS stack via `docker compose --env-file .env.stage up -d` (defaults to GHCR `:main` tags).
 - `.env.portainer.example` → `.env.portainer`: Portainer stack env file (same vars as staging) when deploying through the UI.
 - `.env` remains ignored; keep real secrets/paths out of the repo.
-- Metadata config (build-time for Web Library): optional `ZOTERO_API_KEY`, `ZOTERO_API_AUTHORITY_PART`, `ZOTERO_USER_SLUG`, `ZOTERO_USER_ID` to point the Web Library at zotero.org or an on-prem metadata source. Set in your env file before building the Web Library image.
+- Metadata config (runtime templating for Web Library): `ZOTERO_API_KEY`, `ZOTERO_API_AUTHORITY_PART`, `ZOTERO_USER_SLUG`, `ZOTERO_USER_ID`, `ZOTERO_INCLUDE_MY_LIBRARY`, `ZOTERO_INCLUDE_USER_GROUPS`, and `ZOTERO_LIBRARIES_INCLUDE_JSON` let you point at zotero.org or an on-prem metadata source. Set these in your env file so the container renders `index.html` with the correct API host/user/groups.
 
+### Metadata configuration & troubleshooting
+
+- Set `ZOTERO_USER_SLUG`/`ZOTERO_USER_ID` and `ZOTERO_API_AUTHORITY_PART` to the metadata host you want (defaults to zotero.org).
+- Control which libraries load with `ZOTERO_INCLUDE_MY_LIBRARY`, `ZOTERO_INCLUDE_USER_GROUPS`, and `ZOTERO_LIBRARIES_INCLUDE_JSON` (JSON array of `{ "key": "g123", "name": "Team", "isGroupLibrary": true }`).
+- Validate templating by viewing page source for `zotero-web-library-config`; wrong host/key/ID typically shows up as `Failed to fetch` in the browser console.
+- For on-prem hosts, ensure the metadata API is reachable from inside the container and that CORS allows the Web Library origin.
 ---
 
 ## 🛠 Components

@@ -23,15 +23,9 @@
 			},
 			"pdfProxyBaseUrl": "$PDF_PROXY_BASE_URL",
 			"libraries": {
-				"include": [
-					{
-						"key": "g729",
-						"name": "All Things Zotero",
-						"isGroupLibrary": true
-					}
-				],
-				"includeMyLibrary": true,
-				"includeUserGroups": false
+				"include": $ZOTERO_LIBRARIES_INCLUDE_JSON,
+				"includeMyLibrary": $ZOTERO_INCLUDE_MY_LIBRARY,
+				"includeUserGroups": $ZOTERO_INCLUDE_USER_GROUPS
 			}
 		}
 	</script>
