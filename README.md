@@ -180,6 +180,7 @@ The sample data generator creates keys like `SAMPLE1` and `SAMPLE2` under `sampl
 - `.env.stage.example` → `.env.stage`: staging/NAS stack via `docker compose --env-file .env.stage up -d` (defaults to GHCR `:main` tags).
 - `.env.portainer.example` → `.env.portainer`: Portainer stack env file (same vars as staging) when deploying through the UI.
 - `.env` remains ignored; keep real secrets/paths out of the repo.
+- Metadata config (build-time for Web Library): optional `ZOTERO_API_KEY`, `ZOTERO_API_AUTHORITY_PART`, `ZOTERO_USER_SLUG`, `ZOTERO_USER_ID` to point the Web Library at zotero.org or an on-prem metadata source. Set in your env file before building the Web Library image.
 
 ---
 
