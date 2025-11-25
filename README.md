@@ -37,6 +37,8 @@ You get:
 * ✔ Safe: does NOT modify Zotero’s zip or prop files
 
 ---
+## Screenshot
+[WebUI](./docs/assets/screenshot.png)
 
 ## 🧩 Architecture
 
