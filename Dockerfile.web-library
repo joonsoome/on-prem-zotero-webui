@@ -17,12 +17,12 @@ RUN mkdir -p /app/web-library-build \
 
 # Fetch upstream submodules (the subtree does not vend them)
 WORKDIR /app/web-library-build
-RUN git clone --depth 1 https://github.com/citation-style-language/locales.git modules/locales \
-    && git clone --depth 1 https://github.com/zotero/reader.git modules/reader \
-    && git clone --depth 1 https://github.com/zotero/pdf-worker.git modules/pdf-worker \
-    && git clone --depth 1 https://github.com/zotero/note-editor.git modules/note-editor \
-    && git clone --depth 1 https://github.com/zotero/web-common.git modules/web-common \
-    && git clone --depth 1 https://github.com/zotero/zotero-schema.git modules/zotero-schema
+RUN git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/citation-style-language/locales.git modules/locales \
+    && git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/zotero/reader.git modules/reader \
+    && git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/zotero/pdf-worker.git modules/pdf-worker \
+    && git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/zotero/note-editor.git modules/note-editor \
+    && git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/zotero/web-common.git modules/web-common \
+    && git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/zotero/zotero-schema.git modules/zotero-schema
 
 # Build Web Library (combined subtree + overlay)
 RUN npm ci \
