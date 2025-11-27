@@ -32,9 +32,17 @@ const tryGetAttachmentURL = attachmentItemKey => {
 	return async (dispatch, getState) => {
 		const state = getState();
 		const item = get(state, ['libraries', state.current.libraryKey, 'items', attachmentItemKey], null);
+		const proxyBase = state.config?.pdfProxyBaseUrl;
 
 		// If a proxy base URL is configured, bypass Storage/enclosure links and use the proxy.
-		if (state.config?.pdfProxyBaseUrl) {
+		if (proxyBase) {
+			// Debug: trace when proxy URL is requested.
+			console.log('[proxy-debug] tryGetAttachmentURL using proxy', {
+				attachmentItemKey,
+				linkMode: item?.linkMode,
+				contentType: item?.contentType,
+				proxyBase,
+			});
 			return dispatch(getAttachmentUrl(attachmentItemKey));
 		}
 
@@ -111,17 +119,29 @@ const pickBestItemAction = itemKey => {
 const pickBestAttachmentItemAction = attachmentItemKey => {
 	return async (dispatch, getState) => {
 		const state = getState();
-		const current = state.current;
-		const item = get(state, ['libraries', state.current.libraryKey, 'items', attachmentItemKey], null);
+	const current = state.current;
+	const item = get(state, ['libraries', state.current.libraryKey, 'items', attachmentItemKey], null);
+	const proxyBase = state.config?.pdfProxyBaseUrl;
 
-		const isFile = item && item.linkMode && item.linkMode.startsWith('imported') && item[Symbol.for('links')].enclosure;
-		const isLink = item && item.linkMode && item.linkMode === 'linked_url';
+	const isFile = item && item.linkMode && item.linkMode.startsWith('imported') && item[Symbol.for('links')].enclosure;
+	const isLink = item && item.linkMode && item.linkMode === 'linked_url';
 
-		if (isFile) {
-			if (Object.keys(READER_CONTENT_TYPES).includes(item.contentType)) {
-				const readerPath = makePath(state.config, {
-					attachmentKey: null,
-					collection: current.collectionKey,
+	if (isFile) {
+		if (Object.keys(READER_CONTENT_TYPES).includes(item.contentType)) {
+			// If proxy is available, prefer proxy URL to force PDF fetch even when reader path is used.
+			if (proxyBase) {
+				console.log('[proxy-debug] pickBestAttachmentItemAction -> proxy open', {
+					attachmentItemKey,
+					linkMode: item.linkMode,
+					contentType: item.contentType,
+					proxyBase,
+				});
+				return openDelayedURL(dispatch(getAttachmentUrl(attachmentItemKey)));
+			}
+
+			const readerPath = makePath(state.config, {
+				attachmentKey: null,
+				collection: current.collectionKey,
 					items: [attachmentItemKey],
 					library: current.libraryKey,
 					noteKey: null,
