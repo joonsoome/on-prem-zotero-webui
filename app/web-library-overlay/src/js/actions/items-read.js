@@ -248,6 +248,13 @@ const getAttachmentUrl = (itemKey, forceFresh = false) => {
 			const base = pdfProxyBaseUrl.replace(/\/$/, '');
 			const url = `${base}/${itemKey}`;
 
+			console.log('[proxy-debug] getAttachmentUrl', {
+				itemKey,
+				pdfProxyBaseUrl,
+				libraryKey,
+				forceFresh,
+			});
+
 			dispatch({
 				type: RECEIVE_ATTACHMENT_URL,
 				libraryKey,

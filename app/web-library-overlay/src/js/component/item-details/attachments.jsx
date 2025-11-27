@@ -82,8 +82,9 @@ const AttachmentActions = memo(props => {
 	const canReparent = !isReadOnly && !isTrash && !isMyPublications;
 	const isReaderCompatible = Object.keys(READER_CONTENT_TYPES).includes(attachment.contentType);
 	const isPDF = attachment.contentType === 'application/pdf';
+	const proxyHref = pdfProxyBaseUrl ? `${pdfProxyBaseUrl.replace(/\/$/, '')}/${itemKey}` : null;
 	const canDownload = (
-		(pdfProxyBaseUrl && isPDF) ||
+		(proxyHref && isPDF) ||
 		(attachment.linkMode.startsWith('imported') && attachment[Symbol.for('links')].enclosure)
 	) && !isUploading;
 
@@ -110,8 +111,15 @@ const AttachmentActions = memo(props => {
 			return;
 		}
 
+		console.log('[proxy-debug] toolbar click', { key, proxyHref, isPDF, urlIsFresh, isFetchingUrl });
+		// If proxy URL is available, let the browser open it directly to ensure network request fires.
+		if (proxyHref) {
+			window.open(proxyHref, '_blank');
+			return;
+		}
+
 		openDelayedURL(dispatch(tryGetAttachmentURL(key)));
-	}, [dispatch, isFetchingUrl]);
+	}, [dispatch, isFetchingUrl, proxyHref, isPDF, urlIsFresh]);
 
 	const handleExportClick = useCallback(ev => {
 		ev.stopPropagation();
@@ -151,7 +159,7 @@ const AttachmentActions = memo(props => {
 					{isReaderCompatibleBrowser() && isReaderCompatible && (
 						<a
 							className="btn btn-icon"
-							href={openInReaderPath}
+							href={proxyHref || openInReaderPath}
 							onClick={stopPropagation}
 							rel="noreferrer"
 							role="button"
@@ -204,6 +212,8 @@ const AttachmentActions = memo(props => {
 					) : (
 						<a
 							className="btn btn-icon"
+							href={proxyHref || undefined}
+							target={proxyHref ? "_blank" : undefined}
 							onClick={handleClick}
 							role="button"
 							tabIndex={-3}
@@ -348,6 +358,24 @@ const Attachment = memo(props => {
 
 	dragRef(ref);
 
+	const proxyHref = pdfProxyBaseUrl ? `${pdfProxyBaseUrl.replace(/\/$/, '')}/${attachment.key}` : null;
+
+	const handleDoubleClick = useCallback(ev => {
+		ev.stopPropagation();
+		ev.preventDefault();
+		console.log('[proxy-debug] row double-click', {
+			key: attachment.key,
+			proxyHref,
+			linkMode: attachment.linkMode,
+			contentType: attachment.contentType,
+		});
+		if (proxyHref) {
+			window.open(proxyHref, '_blank');
+			return;
+		}
+		openDelayedURL(dispatch(tryGetAttachmentURL(attachment.key)));
+	}, [attachment.key, attachment.linkMode, attachment.contentType, proxyHref, dispatch]);
+
 	return (
 		<li
 			aria-labelledby={id.current}
@@ -356,6 +384,7 @@ const Attachment = memo(props => {
 			data-key={attachment.key}
 			onBlur={handleBlur}
 			onClick={handleAttachmentSelect}
+			onDoubleClick={handleDoubleClick}
 			onFocus={handleFocus}
 			onKeyDown={handleKeyDown}
 			tabIndex={-2}
