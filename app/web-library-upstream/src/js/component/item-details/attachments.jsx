@@ -432,12 +432,13 @@ const Attachments = ({ id, isActive, isReadOnly, ...rest }) => {
 	const shouldUseTabs = useSelector(state => state.device.shouldUseTabs);
 	const isTouchOrSmall = useSelector(state => state.device.isTouchOrSmall);
 	const itemsSource = useSelector(state => state.current.itemsSource);
+	const allowUploads = useSelector(state => state.config?.allowUploads ?? true);
 	const isFileUploadAllowedInLibrary = useSelector(
 		state => (state.config.libraries.find(
 			l => l.key === state.current.libraryKey
 		) || {}).isFileUploadAllowed
 	);
-	const isFileUploadAllowed = isFileUploadAllowedInLibrary && !['trash', 'publications'].includes(itemsSource);
+	const isFileUploadAllowed = allowUploads && isFileUploadAllowedInLibrary && !['trash', 'publications'].includes(itemsSource);
 	const isReady = !shouldUseTabs || (shouldUseTabs && isFetched);
 	const attachments = (isReady && keys ? keys : [])
 		.map(childItemKey => allItems[childItemKey])
@@ -567,7 +568,7 @@ const Attachments = ({ id, isActive, isReadOnly, ...rest }) => {
 				<AddLinkedUrlForm ref={addLinkUrlFormRef} onClose={handleLinkedFileCancel} />
 			</CSSTransition>
 			<h5 className="h2 tab-pane-heading hidden-mouse">Attachments</h5>
-			{!isTouchOrSmall && (
+			{!isTouchOrSmall && allowUploads && (
 				<Toolbar>
 					<div className="toolbar-left">
 						<div className="counter">
@@ -597,16 +598,18 @@ const Attachments = ({ id, isActive, isReadOnly, ...rest }) => {
 										</Button>
 									</div>
 								)}
-								<Button
-									className="btn-default toolbar-focusable"
-									disabled={isReadOnly}
-									onClick={handleLinkedFileClick}
-									onKeyDown={handleFileInputKeyDown}
-									tabIndex={isFileUploadAllowed ? -3 : 0}
-									ref={addLinkedUrlButtonRef}
-								>
-									Add Linked URL
-								</Button>
+								{allowUploads && (
+									<Button
+										className="btn-default toolbar-focusable"
+										disabled={isReadOnly}
+										onClick={handleLinkedFileClick}
+										onKeyDown={handleFileInputKeyDown}
+										tabIndex={isFileUploadAllowed ? -3 : 0}
+										ref={addLinkedUrlButtonRef}
+									>
+										Add Linked URL
+									</Button>
+								)}
 							</ToolGroup>
 						)}
 					</div>
@@ -640,7 +643,7 @@ const Attachments = ({ id, isActive, isReadOnly, ...rest }) => {
 						</ul>
 					</nav>
 				)}
-				{isTouchOrSmall && !isReadOnly && (
+				{isTouchOrSmall && !isReadOnly && allowUploads && (
 					<Fragment>
 						{isFileUploadAllowed && (
 							<div className="btn-file">
@@ -659,14 +662,16 @@ const Attachments = ({ id, isActive, isReadOnly, ...rest }) => {
 								</Button>
 							</div>
 						)}
-						<Button
-							onClick={handleAddLinkedUrlTouchClick}
-							className="btn-block text-left hairline-top hairline-start-icon-28 btn-transparent-secondary"
-							tabIndex={-1}
-						>
-							<Icon type={'24/plus-circle-strong'} width="24" height="24" />
-							Add Linked URL
-						</Button>
+						{allowUploads && (
+							<Button
+								onClick={handleAddLinkedUrlTouchClick}
+								className="btn-block text-left hairline-top hairline-start-icon-28 btn-transparent-secondary"
+								tabIndex={-1}
+							>
+								<Icon type={'24/plus-circle-strong'} width="24" height="24" />
+								Add Linked URL
+							</Button>
+						)}
 					</Fragment>
 				)}
 			</div>
