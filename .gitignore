@@ -216,3 +216,6 @@ README-draft.md
 openspec/
 sample-webdav/
 app/web-library-build/
+.env.dev
+.env.portainer
+.env.stage
