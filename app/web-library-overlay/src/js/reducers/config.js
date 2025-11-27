@@ -13,6 +13,7 @@ const defaultState = {
 	isEmbedded: false,
 	containterClassName: '',
 	allowUploads: true,
+	pdfProxyBaseUrl: '',
 };
 
 const determineIfWriteable = (userId, ownerId, writeability, admins) => {
@@ -76,10 +77,13 @@ const config = (state = defaultState, action) => {
 			action.libraries = action.libraries || {};
 			// On-prem overlay: allowUploads flag can force uploads off regardless of API key/group permissions.
 			const allowUploads = (typeof action.allowUploads === 'boolean') ? action.allowUploads : true;
+			// On-prem overlay: persist proxy base from config so attachment URLs resolve correctly.
+			const pdfProxyBaseUrl = (typeof action.pdfProxyBaseUrl === 'string') ? action.pdfProxyBaseUrl : '';
 			return {
 				...state,
 				...pick(action, Object.keys(defaults)),
 				allowUploads,
+				pdfProxyBaseUrl,
 				defaultLibraryKey: determineDefaultLibraryKey(action),
 				includeMyLibrary: action.libraries.includeMyLibrary,
 				includeUserGroups: action.libraries.includeUserGroups,
