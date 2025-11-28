@@ -3,7 +3,7 @@
 **Self-hosted Zotero WebUI Opensource Library + WebDAV-based PDF viewer **Avoid storage fees, keep privacy, and still enjoy a full browser-based Zotero library.
 
 ## It is PoC
-It(v0.1.11) is still fully not properly works, please keep on watching to be ready for production.
+It(v0.1.12) is still fully not properly works, please keep on watching to be ready for production.
 
 ---
 

@@ -90,8 +90,18 @@ const pickBestItemAction = itemKey => {
 		const attachment = get(item, [Symbol.for('links'), 'attachment'], null);
 		if(attachment) {
 			const attachmentItemKey = getItemFromApiUrl(attachment.href);
+			const proxyUrl = getProxyPdfUrl(state, attachmentItemKey);
+
 			if (Object.keys(READER_CONTENT_TYPES).includes(attachment.attachmentType)) {
-				// "best" attachment is PDF, open in reader
+				// "best" attachment is PDF: prefer proxy if available, else reader path
+				if (proxyUrl) {
+					console.log('[proxy-debug] pickBestItemAction -> proxy open', {
+						itemKey,
+						attachmentItemKey,
+						proxyUrl,
+					});
+					return window.open(proxyUrl, '_blank');
+				}
 				const readerPath = makePath(state.config, {
 					attachmentKey: attachmentItemKey,
 					collection: current.collectionKey,
@@ -137,7 +147,7 @@ const pickBestAttachmentItemAction = attachmentItemKey => {
 						contentType: item.contentType,
 						proxyUrl,
 					});
-					return openDelayedURL(dispatch(getAttachmentUrl(attachmentItemKey)));
+					return window.open(proxyUrl, '_blank');
 				}
 
 				const readerPath = makePath(state.config, {
