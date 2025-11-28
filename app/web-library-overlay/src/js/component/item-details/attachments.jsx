@@ -296,6 +296,7 @@ const Attachment = memo(props => {
 	const libraryKey = useSelector(state => state.current.libraryKey);
 	const attachmentKey = useSelector(state => state.current.attachmentKey);
 	const isTouchOrSmall = useSelector(state => state.device.isTouchOrSmall);
+	const proxyHref = useSelector(state => getProxyPdfUrl(state, attachment.key));
 
 	const [isFocused, setIsFocused] = useState(false);
 	const [_, dragRef] = useDrag({ // eslint-disable-line no-unused-vars
@@ -318,7 +319,7 @@ const Attachment = memo(props => {
 	const isFile = attachment.linkMode.startsWith('imported') &&
 		attachment[Symbol.for('links')].enclosure;
 	const isLink = attachment.linkMode === 'linked_url';
-	const hasLink = isFile || isLink || Boolean(useSelector(state => getProxyPdfUrl(state, attachment.key)));
+	const hasLink = isFile || isLink || Boolean(proxyHref);
 
 	const handleKeyDown = useCallback(ev => {
 		if (ev.key === 'ArrowRight') {
@@ -362,7 +363,7 @@ const Attachment = memo(props => {
 		ev.preventDefault();
 		console.log('[proxy-debug] row double-click', {
 			key: attachment.key,
-			proxyHref: getProxyPdfUrl({ ...state }, attachment.key), // log helper result
+			proxyHref,
 			linkMode: attachment.linkMode,
 			contentType: attachment.contentType,
 		});
