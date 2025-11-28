@@ -5,6 +5,7 @@ import { getItemKeysPath } from '../common/state';
 import { get, getAbortController, mapRelationsToItemKeys } from '../utils';
 import columnProperties from '../constants/column-properties';
 import { connectionIssues, requestTracker, requestWithBackoff } from '.';
+import { getProxyPdfUrl } from '../common/proxy';
 
 const fetchItems = (
 	type,
@@ -241,18 +242,14 @@ const getAttachmentUrl = (itemKey, forceFresh = false) => {
 		const { libraryKey } = state.current;
 
 		// On-prem overlay hook:
-		// If a pdfProxyBaseUrl is configured, bypass the Zotero API attachment URL
-		// and instead point directly at the on-prem PDF proxy.
-		const pdfProxyBaseUrl = state.config?.pdfProxyBaseUrl;
-		if(pdfProxyBaseUrl) {
-			const base = pdfProxyBaseUrl.replace(/\/$/, '');
-			const url = `${base}/${itemKey}`;
-
+		// Use centralized helper to resolve proxy URL for PDFs when configured.
+		const proxyUrl = getProxyPdfUrl(state, itemKey);
+		if(proxyUrl) {
 			console.log('[proxy-debug] getAttachmentUrl', {
 				itemKey,
-				pdfProxyBaseUrl,
 				libraryKey,
 				forceFresh,
+				proxyUrl,
 			});
 
 			dispatch({
@@ -260,10 +257,10 @@ const getAttachmentUrl = (itemKey, forceFresh = false) => {
 				libraryKey,
 				itemKey,
 				forceFresh,
-				url,
+				url: proxyUrl,
 			});
 
-			return url;
+			return proxyUrl;
 		}
 
 		const attachmentURLdata = state.libraries[state.current.libraryKey]?.attachmentsUrl[itemKey];

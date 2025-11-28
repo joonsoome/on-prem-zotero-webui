@@ -23,6 +23,7 @@ import { getFileData } from '../../common/event';
 import { pluralize } from '../../common/format';
 import { Toolbar, ToolGroup } from '../ui/toolbars';
 import { makePath } from '../../common/navigation';
+import { getProxyPdfUrl } from '../../common/proxy';
 import { useItemsState } from '../../hooks';
 
 const AttachmentIcon = memo(({ isActive, item, size }) => {
@@ -77,12 +78,11 @@ const AttachmentActions = memo(props => {
 	const search = useSelector(state => state.current.search);
 	const tags = useSelector(state => state.current.tags);
 	const config = useSelector(state => state.config);
-	const pdfProxyBaseUrl = config?.pdfProxyBaseUrl;
 	const [isDropdownOpen, setDropdownOpen] = useState(false);
 	const canReparent = !isReadOnly && !isTrash && !isMyPublications;
 	const isReaderCompatible = Object.keys(READER_CONTENT_TYPES).includes(attachment.contentType);
 	const isPDF = attachment.contentType === 'application/pdf';
-	const proxyHref = pdfProxyBaseUrl ? `${pdfProxyBaseUrl.replace(/\/$/, '')}/${itemKey}` : null;
+	const proxyHref = useSelector(state => getProxyPdfUrl(state, itemKey));
 	const canDownload = (
 		(proxyHref && isPDF) ||
 		(attachment.linkMode.startsWith('imported') && attachment[Symbol.for('links')].enclosure)
@@ -294,7 +294,6 @@ const Attachment = memo(props => {
 	);
 
 	const libraryKey = useSelector(state => state.current.libraryKey);
-	const pdfProxyBaseUrl = useSelector(state => state.config?.pdfProxyBaseUrl);
 	const attachmentKey = useSelector(state => state.current.attachmentKey);
 	const isTouchOrSmall = useSelector(state => state.device.isTouchOrSmall);
 
@@ -319,7 +318,7 @@ const Attachment = memo(props => {
 	const isFile = attachment.linkMode.startsWith('imported') &&
 		attachment[Symbol.for('links')].enclosure;
 	const isLink = attachment.linkMode === 'linked_url';
-	const hasLink = isFile || isLink || Boolean(pdfProxyBaseUrl);
+	const hasLink = isFile || isLink || Boolean(useSelector(state => getProxyPdfUrl(state, attachment.key)));
 
 	const handleKeyDown = useCallback(ev => {
 		if (ev.key === 'ArrowRight') {
@@ -358,14 +357,12 @@ const Attachment = memo(props => {
 
 	dragRef(ref);
 
-	const proxyHref = pdfProxyBaseUrl ? `${pdfProxyBaseUrl.replace(/\/$/, '')}/${attachment.key}` : null;
-
 	const handleDoubleClick = useCallback(ev => {
 		ev.stopPropagation();
 		ev.preventDefault();
 		console.log('[proxy-debug] row double-click', {
 			key: attachment.key,
-			proxyHref,
+			proxyHref: getProxyPdfUrl({ ...state }, attachment.key), // log helper result
 			linkMode: attachment.linkMode,
 			contentType: attachment.contentType,
 		});
