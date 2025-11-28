@@ -1,6 +1,6 @@
 # Test Scenarios (Local Dev Environment)
 
-Use these scenarios when the dev stack is running (see "Getting Started: Test Environment" in `README-draft.md`).
+Use these scenarios when the dev stack is running (see "Dev stack: test environment" in `docs/development-overview.md`).
 
 ## 1. Open PDF via Web Library
 
@@ -25,4 +25,3 @@ Use these scenarios when the dev stack is running (see "Getting Started: Test En
 - [ ] (Optional) Add a sample zip without any PDFs using the generator script or manual zip creation.
 - [ ] Request that key via `/pdf/{key}`.
 - [ ] Confirm that the proxy returns a 404 (or appropriate error code) and that the Web Library UI surfaces a clear error.
-
