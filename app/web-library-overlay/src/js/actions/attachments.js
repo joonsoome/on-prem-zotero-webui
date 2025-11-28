@@ -200,12 +200,20 @@ const exportAttachmentWithAnnotations = itemKey => {
 			if (attachmentItem.contentType !== 'application/pdf') {
 				throw new Error("Attachment is not a PDF");
 			}
+			const proxyUrl = getProxyPdfUrl(state, itemKey);
+			const fetchUrl = proxyUrl || attachmentURL;
+			if (proxyUrl) {
+				console.log('[proxy-debug] exportAttachmentWithAnnotations -> proxy fetch', {
+					itemKey,
+					proxyUrl,
+				});
+			}
 			const annotations = childItems
 				.map(childItemKey => allItems[childItemKey])
 				.filter(item => !item.deleted && item.itemType === 'annotation');
 
 			const pdfWorker = new PDFWorker({ pdfWorkerURL, pdfReaderCMapsURL, pdfReaderStandardFontsURL });
-			const data = await (await fetch(attachmentURL)).arrayBuffer();
+			const data = await (await fetch(fetchUrl)).arrayBuffer();
 			const buf = await pdfWorker.export(data, annotations);
 			const blob = new Blob([buf], { type: 'application/pdf' });
 			const fileName = attachmentItem?.filename || 'file.pdf';
