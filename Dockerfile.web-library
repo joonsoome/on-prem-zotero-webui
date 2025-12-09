@@ -12,8 +12,10 @@ COPY app/web-library-overlay/ /app/web-library-overlay/
 # Apply overlay into a build directory
 RUN mkdir -p /app/web-library-build \
     && rsync -a /app/web-library-upstream/ /app/web-library-build/ \
+    && mkdir -p /app/web-library-build/data \
     && if [ -d /app/web-library-overlay/src ]; then rsync -a /app/web-library-overlay/src/ /app/web-library-build/src/; fi \
-    && if [ -d /app/web-library-overlay/config ]; then rsync -a /app/web-library-overlay/config/ /app/web-library-build/config/; fi
+    && if [ -d /app/web-library-overlay/config ]; then rsync -a /app/web-library-overlay/config/ /app/web-library-build/config/; fi \
+    && if [ -d /app/web-library-overlay/data ]; then rsync -a /app/web-library-overlay/data/ /app/web-library-build/data/; fi
 
 # Fetch upstream submodules (the subtree does not vend them)
 WORKDIR /app/web-library-build
