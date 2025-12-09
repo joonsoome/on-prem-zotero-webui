@@ -2,7 +2,7 @@
 
 > Unofficial, self‑hosted web UI for reading PDFs from a Zotero library that syncs attachments via WebDAV.
 
-**Status:** PoC / early preview (v0.1.13). Things may break; please treat this as an experiment, not production‑ready software.
+**Status:** PoC / early preview (v0.1.14). Things may break; please treat this as an experiment, not production‑ready software.
 
 Screenshot:
 ![WebUI](./docs/assets/screenshot.png)
