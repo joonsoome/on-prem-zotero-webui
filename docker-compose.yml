@@ -5,6 +5,9 @@ services:
     image: ${PDF_PROXY_IMAGE:-ghcr.io/joonsoome/on-prem-zotero-webui/pdf-proxy:main}
     environment:
       - ZOTERO_ROOT=/data/zotero
+      - PDF_PROXY_BASIC_AUTH_USER=${PDF_PROXY_BASIC_AUTH_USER:-}
+      - PDF_PROXY_BASIC_AUTH_PASSWORD=${PDF_PROXY_BASIC_AUTH_PASSWORD:-}
+      - PDF_PROXY_BASIC_AUTH_REALM=${PDF_PROXY_BASIC_AUTH_REALM:-Zotero PDF Proxy}
     volumes:
       - ${ZOTERO_ROOT_HOST_PATH:-/volume1/Reference/zotero}:/data/zotero
     ports:
@@ -23,6 +26,9 @@ services:
       - ZOTERO_INCLUDE_USER_GROUPS=${ZOTERO_INCLUDE_USER_GROUPS:-true}
       - ZOTERO_LIBRARIES_INCLUDE_JSON=${ZOTERO_LIBRARIES_INCLUDE_JSON:-[]}
       - WEB_LIBRARY_ALLOW_UPLOADS=${WEB_LIBRARY_ALLOW_UPLOADS:-false}
+      - WEB_LIBRARY_BASIC_AUTH_USER=${WEB_LIBRARY_BASIC_AUTH_USER:-}
+      - WEB_LIBRARY_BASIC_AUTH_PASSWORD=${WEB_LIBRARY_BASIC_AUTH_PASSWORD:-}
+      - WEB_LIBRARY_BASIC_AUTH_REALM=${WEB_LIBRARY_BASIC_AUTH_REALM:-Zotero WebUI}
     ports:
       - "${WEB_LIBRARY_PORT:-8281}:80"
     depends_on:

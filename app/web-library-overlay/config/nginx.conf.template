@@ -5,6 +5,8 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
+    ${AUTH_SNIPPET}
+
     location / {
         try_files $uri $uri/ /index.html;
     }

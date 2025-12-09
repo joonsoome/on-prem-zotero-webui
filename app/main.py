@@ -1,12 +1,14 @@
 import logging
 import os
 import re
+import secrets
 import zipfile
 from pathlib import Path
 from typing import Iterable, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 
 logging.basicConfig(level=logging.INFO)
@@ -22,6 +24,11 @@ ZOTERO_ROOT = get_zotero_root()
 
 
 app = FastAPI(title="Zotero WebDAV PDF Proxy")
+basic_auth_scheme = HTTPBasic(auto_error=False)
+
+BASIC_AUTH_USER = os.getenv("PDF_PROXY_BASIC_AUTH_USER")
+BASIC_AUTH_PASSWORD = os.getenv("PDF_PROXY_BASIC_AUTH_PASSWORD")
+BASIC_AUTH_REALM = os.getenv("PDF_PROXY_BASIC_AUTH_REALM", "Zotero PDF Proxy")
 
 
 def validate_key(key: str) -> None:
@@ -103,12 +110,35 @@ def stream_pdf(path: Path) -> StreamingResponse:
     return StreamingResponse(iterator(), media_type="application/pdf", headers=headers)
 
 
-@app.get("/health")
+def enforce_basic_auth(
+    credentials: Optional[HTTPBasicCredentials] = Depends(basic_auth_scheme),
+) -> None:
+    auth_configured = BASIC_AUTH_USER and BASIC_AUTH_PASSWORD
+    if not auth_configured:
+        return
+
+    unauthorized = HTTPException(
+        status_code=401,
+        detail="Unauthorized",
+        headers={"WWW-Authenticate": f'Basic realm="{BASIC_AUTH_REALM}"'},
+    )
+
+    if credentials is None:
+        raise unauthorized
+
+    username_valid = secrets.compare_digest(credentials.username, BASIC_AUTH_USER)
+    password_valid = secrets.compare_digest(credentials.password, BASIC_AUTH_PASSWORD)
+
+    if not username_valid or not password_valid:
+        raise unauthorized
+
+
+@app.get("/health", dependencies=[Depends(enforce_basic_auth)])
 def health() -> dict:
     return {"status": "ok"}
 
 
-@app.get("/pdf/{key}")
+@app.get("/pdf/{key}", dependencies=[Depends(enforce_basic_auth)])
 def get_pdf(key: str):
     validate_key(key)
 
@@ -128,4 +158,3 @@ def get_pdf(key: str):
     except Exception as error:
         logger.exception("Unexpected error while processing key=%s", key)
         raise HTTPException(status_code=500, detail="Internal server error") from error
-
