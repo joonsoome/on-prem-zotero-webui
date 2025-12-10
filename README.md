@@ -5,7 +5,11 @@
 **Status:** PoC / early preview (v0.1.14). Things may break; please treat this as an experiment, not production‑ready software.
 
 Screenshot:
-![WebUI](./docs/assets/screenshot.png)
+
+
+https://github.com/user-attachments/assets/46697d2f-0320-47f1-b843-a2abc02c350f
+
+
 
 ---
 
